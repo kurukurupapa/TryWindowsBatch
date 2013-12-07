@@ -1,4 +1,7 @@
 @echo off
+
+rem gnuwin32のsedを使ってみたバッチファイルです。
+
 set basedir=%~dp0
 set batname=%~n0%~x0
 set datestr=%DATE:/=%
@@ -17,6 +20,10 @@ echo 処理開始します。
 set datadir=%basedir%Data
 set outdir=%basedir%Result
 set expectdir=%basedir%Expect
+
+if not exist %outdir% (
+	mkdir %outdir%
+)
 
 echo --------------------------------------------------
 echo 半角文字の変換
