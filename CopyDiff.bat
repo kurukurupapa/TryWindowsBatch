@@ -44,20 +44,20 @@ rem cat %difflist%
 
 rem 追加/変更/削除されたファイルの一覧を取得する
 cat %difflist% | ^
-sed "s!^\(%befdir:\=\\%\)\(/.*\)\?だけに発見: \(.*\)$!DEL,\1\2/\3!" | ^
-sed "s!^\(%aftdir:\=\\%\)\(/.*\)\?だけに発見: \(.*\)$!ADD,\1\2/\3!" | ^
-sed "s!^ファイル\(.*\)と\(.*\)は違います$!MOD,\2!" | ^
-sed "s!/!\\!g" > %filelist2%
+sed "s!^\(%befdir:\=\\%\)\(/.*\)\?だけに発見: \(.*\)$!DEL,.\2,\3!" | ^
+sed "s!^\(%aftdir:\=\\%\)\(/.*\)\?だけに発見: \(.*\)$!ADD,.\2,\3!" | ^
+sed "s!^ファイル\(%befdir:\=\\%\)\(/.*\)と\(%aftdir:\=\\%\)\(/.*\)\?/\([^/]*\)は違います$!MOD,.\4,\5!" | ^
+grep "^\(DEL\|ADD\|MOD\)," > %filelist2%
 
-awk -F, "{print $2}" %filelist2% > %filelist%
+awk -F, "{print $2 \"/\" $3}" %filelist2% > %filelist%
 
 rem cat %filelist%
 
 rem コピー用一時バッチファイルを作成する
-cat %filelist% | ^
-grep -E "^%aftdir:\=\\%" | ^
-sed "s!^%aftdir:\=\\%\\\(.*\)$!.\\\1!" | ^
-sed "s!^\(.*\)\\\([^\\]*\)$!call %basedir:\=\\%\\CopyDiff_Copy.bat %aftdir:\=\\% %outdir:\=\\% \1 \2!" > %tmpbat%
+cat %filelist2% | ^
+grep "^\(ADD\|MOD\)," | ^
+sed "s!/!\\!g" | ^
+sed "s!^\(.*\),\(.*\),\(.*\)$!call %basedir:\=\\%\\CopyDiff_Copy.bat %aftdir:\=\\% %outdir:\=\\% \2 \3!" > %tmpbat%
 
 rem cat %tmpbat%
 

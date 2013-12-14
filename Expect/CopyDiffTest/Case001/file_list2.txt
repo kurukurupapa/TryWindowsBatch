@@ -1,3 +1,3 @@
-MOD,D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case001\Dir2\DiffFile.txt
-DEL,D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case001\Dir1\Dir1OnlyFile.txt
-ADD,D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case001\Dir2\Dir2OnlyFile.txt
+MOD,.,DiffFile.txt
+DEL,.,Dir1OnlyFile.txt
+ADD,.,Dir2OnlyFile.txt
