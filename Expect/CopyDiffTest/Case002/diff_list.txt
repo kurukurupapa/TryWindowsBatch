@@ -1,0 +1,20 @@
+ファイルD:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/DiffDir/DiffFile.txtとD:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/DiffDir/DiffFile.txtは違います
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/DiffDirだけに発見: Dir1OnlyFile.txt
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/DiffDirだけに発見: Dir2OnlyFile.txt
+ファイルD:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/DiffFile.txtとD:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/DiffFile.txtは違います
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1だけに発見: Dir1OnlyDir
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1だけに発見: Dir1OnlyDir_NoFile
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1だけに発見: Dir1OnlyFile.txt
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2だけに発見: Dir2OnlyDir
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2だけに発見: Dir2OnlyDir_NoFile
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2だけに発見: Dir2OnlyFile.txt
+ファイルD:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/NestDir/DiffDir/DiffFile.txtとD:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/NestDir/DiffDir/DiffFile.txtは違います
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/NestDir/DiffDirだけに発見: Dir1OnlyFile.txt
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/NestDir/DiffDirだけに発見: Dir2OnlyFile.txt
+ファイルD:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/NestDir/DiffFile.txtとD:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/NestDir/DiffFile.txtは違います
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/NestDirだけに発見: Dir1OnlyDir
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/NestDirだけに発見: Dir1OnlyDir_NoFile
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir1/NestDirだけに発見: Dir1OnlyFile.txt
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/NestDirだけに発見: Dir2OnlyDir
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/NestDirだけに発見: Dir2OnlyDir_NoFile
+D:\Windows\GitHub\TryWindowsBatch\Data\CopyDiffTest\Case002\Dir2/NestDirだけに発見: Dir2OnlyFile.txt
