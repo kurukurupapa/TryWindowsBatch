@@ -1,0 +1,2 @@
+call D:\Windows\GitHub\TryWindowsBatch\\DiffCopy_Copy.bat D:\Windows\GitHub\TryWindowsBatch\Data\DiffCopyTest\Case001\Dir2 D:\Windows\GitHub\TryWindowsBatch\Result\DiffCopyTest\Case001 . DiffFile.txt
+call D:\Windows\GitHub\TryWindowsBatch\\DiffCopy_Copy.bat D:\Windows\GitHub\TryWindowsBatch\Data\DiffCopyTest\Case001\Dir2 D:\Windows\GitHub\TryWindowsBatch\Result\DiffCopyTest\Case001 . Dir2OnlyFile.txt

@@ -1,0 +1,3 @@
+ƒtƒ@ƒCƒ‹D:\Windows\GitHub\TryWindowsBatch\Data\DiffCopyTest\Case001\Dir1/DiffFile.txt‚ÆD:\Windows\GitHub\TryWindowsBatch\Data\DiffCopyTest\Case001\Dir2/DiffFile.txt‚Íˆá‚¢‚Ü‚·
+D:\Windows\GitHub\TryWindowsBatch\Data\DiffCopyTest\Case001\Dir1‚¾‚¯‚É”­Œ©: Dir1OnlyFile.txt
+D:\Windows\GitHub\TryWindowsBatch\Data\DiffCopyTest\Case001\Dir2‚¾‚¯‚É”­Œ©: Dir2OnlyFile.txt
