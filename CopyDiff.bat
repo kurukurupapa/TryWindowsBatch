@@ -1,6 +1,9 @@
 @echo off
 
 rem 二つのディレクトリ間の差分ファイルを抽出するWindowsバッチファイルです。
+rem 
+rem 制約事項
+rem ・空白を含むディレクトリ/ファイル名は、考慮していません。
 
 setlocal
 set basedir=%~dp0
@@ -25,6 +28,7 @@ set aftdir=%2
 set outdir=%3
 set difflist=%outdir%\diff_list.txt
 set filelist=%outdir%\file_list.txt
+set filelist2=%outdir%\file_list2.txt
 set tmpbat=%outdir%\tmp.bat
 
 echo befdir: %1
@@ -40,9 +44,12 @@ rem cat %difflist%
 
 rem 追加/変更/削除されたファイルの一覧を取得する
 cat %difflist% | ^
-sed "s!^\(.*\)だけに発見: \(.*\)$!\1/\2!" | ^
-sed "s!^ファイル\(.*\)と\(.*\)は違います$!\2!" | ^
-sed "s!/!\\!g" > %filelist%
+sed "s!^\(%befdir:\=\\%\)\(/.*\)\?だけに発見: \(.*\)$!DEL,\1\2/\3!" | ^
+sed "s!^\(%aftdir:\=\\%\)\(/.*\)\?だけに発見: \(.*\)$!ADD,\1\2/\3!" | ^
+sed "s!^ファイル\(.*\)と\(.*\)は違います$!MOD,\2!" | ^
+sed "s!/!\\!g" > %filelist2%
+
+awk -F, "{print $2}" %filelist2% > %filelist%
 
 rem cat %filelist%
 
