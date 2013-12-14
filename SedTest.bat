@@ -17,9 +17,9 @@ echo ˆ—ŠJn‚µ‚Ü‚·B
 
 
 
-set datadir=%basedir%Data
-set outdir=%basedir%Result
-set expectdir=%basedir%Expect
+set datadir=%basedir%Data\SedTest
+set outdir=%basedir%Result\SedTest
+set expectdir=%basedir%Expect\SedTest
 
 if not exist %outdir% (
 	mkdir %outdir%
