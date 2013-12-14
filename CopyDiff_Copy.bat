@@ -17,7 +17,7 @@ if "%3"=="" goto USAGE
 if "%4"=="" goto USAGE
 
 :MAIN
-echo 処理開始します。
+rem echo 処理開始します。
 
 
 
@@ -31,8 +31,8 @@ set inpath=%indir%\%subname%
 set outdir=%outbasedir%\%subdir%
 set outpath=%outdir%\%subname%
 
-echo inpath=%inpath%
-echo outpath=%outpath%
+rem echo inpath=%inpath%
+rem echo outpath=%outpath%
 
 [ -d %inpath% ]
 if %ERRORLEVEL%==0 (
@@ -62,7 +62,7 @@ exit /b 0
 
 
 :END
-echo 正常終了です。
+rem echo 正常終了です。
 exit /b 0
 
 :USAGE
