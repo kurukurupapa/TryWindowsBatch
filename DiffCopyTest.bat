@@ -17,9 +17,9 @@ echo 処理開始します。
 
 
 
-set databasedir=%basedir%Data\CopyDiffTest
-set outbasedir=%basedir%Result\CopyDiffTest
-set expectbasedir=%basedir%Expect\CopyDiffTest
+set databasedir=%basedir%Data\DiffCopyTest
+set outbasedir=%basedir%Result\DiffCopyTest
+set expectbasedir=%basedir%Expect\DiffCopyTest
 
 if not exist %outbasedir% (
 	mkdir %outbasedir%
@@ -38,7 +38,7 @@ echo rmdir /s /q %outdir%
 rmdir /s /q %outdir%
 
 rem テスト実行
-call CopyDiff.bat %indir1% %indir2% %outdir%
+call DiffCopy.bat %indir1% %indir2% %outdir%
 
 rem 検証
 diff -r %expectdir% %outdir%
@@ -61,7 +61,7 @@ echo rmdir /s /q %outdir%
 rmdir /s /q %outdir%
 
 rem テスト実行
-call CopyDiff.bat %indir1% %indir2% %outdir%
+call DiffCopy.bat %indir1% %indir2% %outdir%
 
 rem 検証
 diff -r %expectdir% %outdir%

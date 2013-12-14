@@ -57,7 +57,7 @@ rem コピー用一時バッチファイルを作成する
 cat %filelist2% | ^
 grep "^\(ADD\|MOD\)," | ^
 sed "s!/!\\!g" | ^
-sed "s!^\(.*\),\(.*\),\(.*\)$!call %basedir:\=\\%\\CopyDiff_Copy.bat %aftdir:\=\\% %outdir:\=\\% \2 \3!" > %tmpbat%
+sed "s!^\(.*\),\(.*\),\(.*\)$!call %basedir:\=\\%\\DiffCopy_Copy.bat %aftdir:\=\\% %outdir:\=\\% \2 \3!" > %tmpbat%
 
 rem cat %tmpbat%
 
