@@ -1,0 +1,19 @@
+' Download03.vbs用ダウンロード対象一覧
+
+' 色々
+WikipediaのVBScriptページです。,https://ja.wikipedia.org/wiki/VBScript,wikipedia_VBScript.txt
+
+' ソフトウェア
+サクラエディタのインストーラー（exe形式）です。,http://downloads.sourceforge.net/project/sakura-editor/sakura2-installer/2.2.0.1/sakura_install2-2-0-1.exe?r=&ts=1474792884&use_mirror=jaist,sakura_install2-2-0-1.exe
+
+' 自作ツール
+C# MiniCmds Latest。C#で作成した簡単なコマンド群です。,https://github.com/kurukurupapa/CsMiniCmd/archive/master.zip,CsMiniCmd-Latest.zip
+C# MiniCmds 0.4.2。C#で作成した簡単なコマンド群です。,https://osdn.jp/projects/rubyminicmd/downloads/50052/vcsminicmd-0.4.2.zip/,vcsminicmd-0.4.2.zip
+Java MiniCmds 0.0.1。Javaで作成した簡単なコマンド群です。,https://osdn.jp/projects/rubyminicmd/downloads/33180/JavaMiniCmds-0.0.1-jar-with-dependencies.jar/,JavaMiniCmds-0.0.1-jar-with-dependencies.jar
+Ruby MiniCmds 20070930。Rubyで作成した簡単なコマンド群です。,https://osdn.jp/projects/rubyminicmd/downloads/27373/rubyminicmd-20070930.zip/,rubyminicmd-20070930.zip
+ToolBox。Windows環境におけるシステム開発を、少し便利にするツール類を、ダウンロード＆セットアップします。 ツールの選定は、かなり個人的な観点で行なっています。,https://github.com/kurukurupapa/ToolBox/archive/master.zip,ToolBox.zip
+
+' テンプレート
+Template-Lite.vbs。VBScriptの簡易版テンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/VBScript/Hello/Template-Lite.vbs,Template-Lite.vbs
+Template-Full.vbs。VBScriptの完全版テンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/VBScript/Hello/Template-Full.vbs,Template-Full.vbs
+java-template。Java開発のテンプレートプロジェクトです。,https://github.com/kurukurupapa/java-template/archive/master.zip,java-template.zip
