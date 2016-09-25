@@ -14,6 +14,7 @@ Ruby MiniCmds 20070930。Rubyで作成した簡単なコマンド群です。,https://osdn.jp/pro
 ToolBox。Windows環境におけるシステム開発を、少し便利にするツール類を、ダウンロード＆セットアップします。 ツールの選定は、かなり個人的な観点で行なっています。,https://github.com/kurukurupapa/ToolBox/archive/master.zip,ToolBox.zip
 
 ' テンプレート
+Template.bat。Windowsバッチファイルのテンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/Bat/Template.bat,Template.bat
 Template-Lite.vbs。VBScriptの簡易版テンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/VBScript/Hello/Template-Lite.vbs,Template-Lite.vbs
 Template-Full.vbs。VBScriptの完全版テンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/VBScript/Hello/Template-Full.vbs,Template-Full.vbs
 java-template。Java開発のテンプレートプロジェクトです。,https://github.com/kurukurupapa/java-template/archive/master.zip,java-template.zip
