@@ -8,22 +8,20 @@
 Option Explicit
 
 Dim scriptName, scriptDir
+Dim dateStr, timeStr, timestampStr
+Dim currentDir
 Init
 
 ' 引数チェック
-Dim usageFlag, arg
-usageFlag = False
-If WScript.Arguments.Count <> 2 Then
-  usageFlag = True
-End If
-For Each arg In WScript.Arguments
-  If arg = "/?" Then
-    usageFlag = True
+If WScript.Arguments.Count >= 1 Then
+  If WScript.Arguments(0) = "/?" Then
+    WScript.Echo "使い方：cscript " & scriptName & " 分割サイズ ファイル"
+    WScript.Quit
   End If
-Next
-If usageFlag Then
-  WScript.Echo "使い方：cscript " & scriptName & " 分割サイズ ファイル"
-  WScript.Quit
+End If
+If WScript.Arguments.Count <> 2 Then
+  WScript.Echo "引数の数が不正です。"
+  Abort
 End If
 Dim splitSize, inPath
 splitSize = WScript.Arguments(0)
@@ -61,6 +59,7 @@ file.Close
 
 
 Log "正常終了です。"
+WScript.Quit 0
 
 ' --------------------------------------------------
 
@@ -94,6 +93,19 @@ End Sub
 Sub Init
   scriptName = WScript.ScriptName
   scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
+  dateStr = Replace(Date(), "/", "")
+  timeStr = Replace(Time(), ":", "")
+  timestampStr = dateStr & "-" & timeStr
+
+  Dim shell
+  Set shell = WScript.CreateObject("WScript.Shell")
+  currentDir = shell.CurrentDirectory
+End Sub
+
+' 処理中止
+Sub Abort
+  Log "異常終了です。"
+  WScript.Quit 1
 End Sub
 
 ' メッセージ出力
