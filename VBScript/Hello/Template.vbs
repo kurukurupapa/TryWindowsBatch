@@ -9,8 +9,8 @@ Init
 
 ' 引数チェック
 If WScript.Arguments.Count >= 1 Then
-  If WScript.Arguments.Item(0) = "/?" Then
-    WScript.Echo "使い方：cscript " & scriptName
+  If WScript.Arguments(0) = "/?" Then
+    WScript.Echo "使い方：cscript " & scriptName & " [/?]"
     WScript.Quit
   End If
 End If
