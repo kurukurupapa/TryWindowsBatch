@@ -9,28 +9,25 @@ Option Explicit
 
 Dim scriptName, scriptDir
 Dim dateStr, timeStr, timestampStr
+Dim currentDir
 Init
 
 ' 引数チェック
-'If WScript.Arguments.Count = 0 Then
-'  WScript.Echo "使い方：cscript " & scriptName & " ZIPファイル"
-'  Quit 0
-'End If
-'Dim zipPath
-'zipPath = WScript.Arguments.Item(0)
-
-' 開始チェック
-'If Not CheckStart Then
-'  WScript.Quit 1
-'End If
+If WScript.Arguments.Count >= 1 Then
+  If WScript.Arguments(0) = "/?" Then
+    WScript.Echo "使い方：cscript " & scriptName & " 入力ファイル 出力ファイル 置換前文字列 置換後文字列"
+    WScript.Quit
+  End If
+End If
 
 ' 主処理
 Log "開始します。"
 
 
+
 Dim zipPath, workDir
 zipPath = scriptDir & "\Data\UnZip01-Dummy.zip"
-workDir = scriptDir & "\Work"
+workDir = currentDir
 WScript.Echo zipPath
 WScript.Echo workDir
 
@@ -41,8 +38,9 @@ Set folder = app.NameSpace(workDir)
 folder.CopyHere zipFile, &H14
 
 
+
 Log "正常終了です。"
-Quit 0
+WScript.Quit 0
 
 ' --------------------------------------------------
 
@@ -53,32 +51,16 @@ Sub Init
   dateStr = Replace(Date(), "/", "")
   timeStr = Replace(Time(), ":", "")
   timestampStr = dateStr & "-" & timeStr
-End Sub
 
-' 処理開始チェック
-Function CheckStart
-  Dim input
-  WScript.Echo "開始してよろしいですか？ (y/n[y])"
-  input = WScript.StdIn.ReadLine
-  CheckStart = (input = "y" Or input = "")
-End Function
+  Dim shell
+  Set shell = WScript.CreateObject("WScript.Shell")
+  currentDir = shell.CurrentDirectory
+End Sub
 
 ' 処理中止
 Sub Abort
   Log "異常終了です。"
-  Quit 1
-End Sub
-
-' 終了処理
-Sub Quit(code)
-  'Pause
-  WScript.Quit code
-End Sub
-
-' ユーザ確認待ち
-Sub Pause
-  WScript.Echo "続行するには何かキーを押してください . . ."
-  WScript.StdIn.ReadLine
+  WScript.Quit 1
 End Sub
 
 ' メッセージ出力
