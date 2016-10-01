@@ -1,4 +1,4 @@
-' VBScript‚Ìƒeƒ“ƒvƒŒ[ƒg‚Å‚·B
+' VBScriptã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã§ã™ã€‚
 
 Option Explicit
 
@@ -7,39 +7,39 @@ Dim dateStr, timeStr, timestampStr
 Dim currentDir
 Init
 
-' ˆø”ƒ`ƒFƒbƒN
+' å¼•æ•°ãƒã‚§ãƒƒã‚¯
 If WScript.Arguments.Count >= 1 Then
   If WScript.Arguments.Item(0) = "/?" Then
-    WScript.Echo "g‚¢•ûFcscript " & scriptName
+    WScript.Echo "ä½¿ã„æ–¹ï¼šcscript " & scriptName
     WScript.Quit
   End If
 End If
 
-' ŠJnƒ`ƒFƒbƒN
+' é–‹å§‹ãƒã‚§ãƒƒã‚¯
 'If Not CheckStart Then
 '  WScript.Quit 1
 'End If
 
-' åˆ—
-Log "ŠJn‚µ‚Ü‚·B"
+' ä¸»å‡¦ç†
+Log "é–‹å§‹ã—ã¾ã™ã€‚"
 
 
-' ¥¥¥‚±‚±‚Éˆ—‚ğ‘‚«‚Ü‚·
+' â–¼â–¼â–¼ã“ã“ã«å‡¦ç†ã‚’æ›¸ãã¾ã™
 WScript.Echo "scriptName=" & scriptName
 WScript.Echo "scriptDir=" & scriptDir
 WScript.Echo "dateStr=" & dateStr
 WScript.Echo "timeStr=" & timeStr
 WScript.Echo "timestampStr=" & timestampStr
 WScript.Echo "currentDir=" & currentDir
-' £££‚±‚±‚Éˆ—‚ğ‘‚«‚Ü‚·
+' â–²â–²â–²ã“ã“ã«å‡¦ç†ã‚’æ›¸ãã¾ã™
 
 
-Log "³íI—¹‚Å‚·B"
+Log "æ­£å¸¸çµ‚äº†ã§ã™ã€‚"
 Quit 0
 
 ' --------------------------------------------------
 
-' ‰Šú‰»ˆ—
+' åˆæœŸåŒ–å‡¦ç†
 Sub Init
   scriptName = WScript.ScriptName
   scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
@@ -52,33 +52,33 @@ Sub Init
   currentDir = shell.CurrentDirectory
 End Sub
 
-' ˆ—ŠJnƒ`ƒFƒbƒN
+' å‡¦ç†é–‹å§‹ãƒã‚§ãƒƒã‚¯
 Function CheckStart
   Dim input
-  WScript.Echo "ŠJn‚µ‚Ä‚æ‚ë‚µ‚¢‚Å‚·‚©H (y/n[y])"
+  WScript.Echo "é–‹å§‹ã—ã¦ã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ (y/n[y])"
   input = WScript.StdIn.ReadLine
   CheckStart = (input = "y" Or input = "")
 End Function
 
-' ˆ—’†~
+' å‡¦ç†ä¸­æ­¢
 Sub Abort
-  Log "ˆÙíI—¹‚Å‚·B"
+  Log "ç•°å¸¸çµ‚äº†ã§ã™ã€‚"
   Quit 1
 End Sub
 
-' I—¹ˆ—
+' çµ‚äº†å‡¦ç†
 Sub Quit(code)
   'Pause
   WScript.Quit code
 End Sub
 
-' ƒ†[ƒUŠm”F‘Ò‚¿
+' ãƒ¦ãƒ¼ã‚¶ç¢ºèªå¾…ã¡
 Sub Pause
-  WScript.Echo "‘±s‚·‚é‚É‚Í‰½‚©ƒL[‚ğ‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢ . . ."
+  WScript.Echo "ç¶šè¡Œã™ã‚‹ã«ã¯ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦ãã ã•ã„ . . ."
   WScript.StdIn.ReadLine
 End Sub
 
-' ƒƒbƒZ[ƒWo—Í
+' ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›
 Sub Log(msg)
   WScript.Echo Now() & " " & scriptName & " " & msg
 End Sub
