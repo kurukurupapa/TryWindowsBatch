@@ -3,6 +3,8 @@ rem テキストファイル内の文字列を変換します。
 rem テキストファイルは、シフトJIS、CRLFの前提です。
 
 rem 参考
+rem バッチファイルでテキストファイル内の文字列置換 - REONTOSANTA
+rem http://knowledge.reontosanta.com/archives/816
 rem バッチファイル | テキストファイルを 1 行ずつ読み込む (完全版？) ( その他コンピュータ ) - Kerupani129 Project のブログ - Yahoo!ブログ
 rem http://blogs.yahoo.co.jp/kerupani/15344574.html
 
