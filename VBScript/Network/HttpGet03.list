@@ -15,6 +15,5 @@ ToolBox。Windows環境におけるシステム開発を、少し便利にするツール類を、ダウンロー
 
 ' テンプレート
 Template.bat。Windowsバッチファイルのテンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/Bat/Template.bat,Template.bat
-Template-Lite.vbs。VBScriptの簡易版テンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/VBScript/Hello/Template-Lite.vbs,Template-Lite.vbs
-Template-Full.vbs。VBScriptの完全版テンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/VBScript/Hello/Template-Full.vbs,Template-Full.vbs
+Template.vbs。VBScriptのテンプレートファイルです。,https://raw.githubusercontent.com/kurukurupapa/TryWindowsBatch/master/VBScript/Hello/Template.vbs,Template.vbs
 java-template。Java開発のテンプレートプロジェクトです。,https://github.com/kurukurupapa/java-template/archive/master.zip,java-template.zip
