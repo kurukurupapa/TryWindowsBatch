@@ -26,6 +26,11 @@ WScript.Echo "dateStr=" & dateStr
 WScript.Echo "timeStr=" & timeStr
 WScript.Echo "timestampStr=" & timestampStr
 WScript.Echo "currentDir=" & currentDir
+
+Dim arg
+For Each arg In WScript.Arguments
+  WScript.Echo arg
+Next
 ' £££‚±‚±‚Éˆ—‚ğ‘‚«‚Ü‚·
 
 
