@@ -5,70 +5,64 @@ Option Explicit
 Dim scriptName, scriptDir
 Dim dateStr, timeStr, timestampStr
 Dim currentDir
+Dim fso
 Init
 
 ' 引数チェック
-Dim help
+Dim arg, help, debug
 help = False
-If WScript.Arguments.Count >= 1 Then
-  If WScript.Arguments(0) = "/?" Then
-    help = True
+debug = False
+For Each arg In WScript.Arguments
+  If IsOptionArg(arg) Then
+    Select Case LCase(arg)
+      Case "/?"
+        help = True
+      Case "/debug"
+        debug = True
+      Case Else
+        WScript.Echo "不正な引数です。arg=" & arg
+        WScript.Quit 1
+    End Select
   End If
-Else
-  help = True
-End If
+Next
 If help Then
-  PrintUsage
+  Usage
   WScript.Quit
 End If
 
 ' 主処理
 Log "開始します。"
 
-Dim arg, fso
+
+' ▼▼▼適宜、処理を書き換えます
+
 Dim dirCount, fileCount, unknownCount
 dirCount = 0
 fileCount = 0
 unknownCount = 0
-Set fso = CreateObject("Scripting.FileSystemObject")
-For Each arg In WScript.Arguments
-  Proc(arg)
-Next
-Set fso = Nothing
-PrintResult
 
+For Each arg In WScript.Arguments
+  If Not IsOptionArg(arg) Then
+    Proc(arg)
+  End If
+Next
+
+WScript.Echo "ディレクトリ数: " & dirCount
+WScript.Echo "ファイル数:     " & fileCount
+WScript.Echo "不明数:         " & unknownCount
+
+' ▲▲▲適宜、処理を書き換えます
+
+
+Set fso = Nothing
 Log "正常終了です。"
 WScript.Quit 0
 
 ' --------------------------------------------------
 
-' 初期化処理
-Sub Init
-  scriptName = WScript.ScriptName
-  scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
-  dateStr = Replace(Date(), "/", "")
-  timeStr = Replace(Time(), ":", "")
-  timestampStr = dateStr & "-" & timeStr
-
-  Dim shell
-  Set shell = WScript.CreateObject("WScript.Shell")
-  currentDir = shell.CurrentDirectory
-End Sub
-
-' 処理中止
-Sub Abort
-  Log "異常終了です。"
-  WScript.Quit 1
-End Sub
-
-' メッセージ出力
-Sub Log(msg)
-  WScript.Echo Now() & " " & scriptName & " " & msg
-End Sub
-
 ' 使用方法
-Sub PrintUsage
-  WScript.Echo "使い方：cscript " & scriptName & " [/?] <ファイル|フォルダ> ..."
+Sub Usage
+  WScript.Echo "使い方：cscript " & scriptName & " [/?][/DEBUG] <ファイル|フォルダ> ..."
 End Sub
 
 ' 1つのディレクトリ/ファイルの処理
@@ -123,10 +117,41 @@ Sub ProcUnknown(arg)
   ' ▲▲▲ここに不明引数の処理を書きます
 End Sub
 
-Sub PrintResult
-  ' ▼▼▼ここに結果出力処理を書きます
-  WScript.Echo "ディレクトリ数: " & dirCount
-  WScript.Echo "ファイル数:     " & fileCount
-  WScript.Echo "不明数:         " & unknownCount
-  ' ▲▲▲ここに結果出力処理を書きます
+' 初期化処理
+Sub Init
+  scriptName = WScript.ScriptName
+  scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
+  dateStr = Replace(Date(), "/", "")
+  timeStr = Replace(Time(), ":", "")
+  timestampStr = dateStr & "-" & timeStr
+
+  Dim shell
+  Set shell = WScript.CreateObject("WScript.Shell")
+  currentDir = shell.CurrentDirectory
+
+  Set fso = CreateObject("Scripting.FileSystemObject")
 End Sub
+
+' 正常終了
+Sub QuitNormally
+  Log "正常終了です。"
+  WScript.Quit 0
+End Sub
+
+' 処理中止
+Sub Abort
+  Log "異常終了です。"
+  WScript.Quit 1
+End Sub
+
+' メッセージ出力
+Sub Log(msg)
+  If debug Then
+    WScript.Echo Now() & " " & scriptName & " " & msg
+  End If
+End Sub
+
+' オプション引数判定
+Function IsOptionArg(arg)
+  IsOptionArg = Left(arg, 1) = "/"
+End Function
