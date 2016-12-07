@@ -2,7 +2,7 @@
 
 Option Explicit
 
-Dim scriptName, scriptDir
+Dim scriptName, scriptDir, baseName, scriptExt
 Dim dateStr, timeStr, timestampStr
 Dim currentDir
 Dim fso
@@ -35,6 +35,15 @@ Log "開始します。"
 
 
 ' ▼▼▼適宜、処理を書き換えます
+
+WScript.Echo "scriptName=" & scriptName
+WScript.Echo "scriptDir=" & scriptDir
+WScript.Echo "baseName=" & baseName
+WScript.Echo "scriptExt=" & scriptExt
+WScript.Echo "dateStr=" & dateStr
+WScript.Echo "timeStr=" & timeStr
+WScript.Echo "timestampStr=" & timestampStr
+WScript.Echo "currentDir=" & currentDir
 
 Dim dirCount, fileCount, unknownCount
 dirCount = 0
@@ -93,8 +102,11 @@ End Sub
 ' 1つのディレクトリの処理
 Sub ProcDir(dirPath)
   ' ▼▼▼ここにディレクトの処理を書きます
-  'Log "ProcDir: " & dirPath
-  WScript.Echo "Dir: " & dirPath
+  Log "ProcDir: " & dirPath
+
+  Dim folder
+  Set folder = fso.GetFolder(dirPath)
+  WScript.Echo "Dir," & dirPath & "," & folder.DateLastModified & "," & folder.Size
   dirCount = dirCount + 1
   ' ▲▲▲ここにディレクトの処理を書きます
 End Sub
@@ -102,8 +114,11 @@ End Sub
 ' 1つのファイルの処理
 Sub ProcFile(filePath)
   ' ▼▼▼ここにファイルの処理を書きます
-  'Log "ProcFile: " & filePath
-  WScript.Echo "File: " & filePath
+  Log "ProcFile: " & filePath
+
+  Dim file
+  Set file = fso.GetFile(filePath)
+  WScript.Echo "File," & filePath & "," & file.DateLastModified & "," & file.Size
   fileCount = fileCount + 1
   ' ▲▲▲ここにファイルの処理を書きます
 End Sub
@@ -111,16 +126,20 @@ End Sub
 ' 1つの不明パスの処理
 Sub ProcUnknown(arg)
   ' ▼▼▼ここに不明引数の処理を書きます
-  'Log "ProcUnknown: " & arg
-  WScript.Echo "Unknown: " & arg
+  Log "ProcUnknown: " & arg
+
+  WScript.Echo "Unknown," & arg
   unknownCount = unknownCount + 1
   ' ▲▲▲ここに不明引数の処理を書きます
 End Sub
 
 ' 初期化処理
 Sub Init
+  Set fso = CreateObject("Scripting.FileSystemObject")
   scriptName = WScript.ScriptName
-  scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
+  scriptDir = fso.GetParentFolderName(WScript.ScriptFullName)
+  baseName = fso.GetBaseName(scriptName)
+  scriptExt = fso.GetExtensionName(scriptName)
   dateStr = Replace(Date(), "/", "")
   timeStr = Replace(Time(), ":", "")
   timestampStr = dateStr & "-" & timeStr
@@ -128,14 +147,6 @@ Sub Init
   Dim shell
   Set shell = WScript.CreateObject("WScript.Shell")
   currentDir = shell.CurrentDirectory
-
-  Set fso = CreateObject("Scripting.FileSystemObject")
-End Sub
-
-' 正常終了
-Sub QuitNormally
-  Log "正常終了です。"
-  WScript.Quit 0
 End Sub
 
 ' 処理中止
