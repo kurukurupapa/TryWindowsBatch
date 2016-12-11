@@ -93,8 +93,8 @@ End Sub
 Sub Init
   scriptName = WScript.ScriptName
   scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
-  dateStr = Replace(Date(), "/", "")
-  timeStr = Replace(Time(), ":", "")
+  dateStr = Year(Date()) & Right("0" & Month(Date()), 2) & Right("0" & Day(Date()), 2)
+  timeStr = Right("0" & Hour(Time()), 2) & Right("0" & Minute(Time()), 2) & Right("0" & Second(Time()), 2)
   timestampStr = dateStr & "-" & timeStr
 
   Dim shell
