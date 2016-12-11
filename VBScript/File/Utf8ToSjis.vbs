@@ -7,16 +7,21 @@
 Option Explicit
 
 Dim scriptName, scriptDir
-Dim dateStr, timeStr, timestampStr
 Dim currentDir
+Dim fso
 Init
 
 ' 引数チェック
-If WScript.Arguments.Count >= 1 Then
-  If WScript.Arguments(0) = "/?" Then
-    WScript.Echo "使い方：cscript " & scriptName & " 入力ファイル 出力ファイル"
-    WScript.Quit
-  End If
+Dim help
+help = False
+If WScript.Arguments.Count = 0 Then
+  help = True
+ElseIf WScript.Arguments(0) = "/?" Then
+  help = True
+End If
+If help Then
+  WScript.Echo "使い方：cscript " & scriptName & " 入力ファイル 出力ファイル"
+  WScript.Quit
 End If
 If WScript.Arguments.Count <> 2 Then
   WScript.Echo "引数の数が不正です。"
@@ -47,8 +52,6 @@ stream.LineSeparator = adLf
 
 ' ファイル書き込み準備（シフトJIS）
 Const ForReading = 1, ForWriting = 2, ForAppending = 8
-Dim fso
-Set fso = CreateObject("Scripting.FileSystemObject")
 Dim outFile
 Set outFile = fso.OpenTextFile(outPath, ForWriting, True)
 
@@ -67,6 +70,7 @@ Set stream = Nothing
 Set fso = Nothing
 
 
+Set fso = Nothing
 Log "正常終了です。"
 WScript.Quit 0
 
@@ -74,11 +78,9 @@ WScript.Quit 0
 
 ' 初期化処理
 Sub Init
+  Set fso = CreateObject("Scripting.FileSystemObject")
   scriptName = WScript.ScriptName
-  scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
-  dateStr = Replace(Date(), "/", "")
-  timeStr = Replace(Time(), ":", "")
-  timestampStr = dateStr & "-" & timeStr
+  scriptDir = fso.GetParentFolderName(WScript.ScriptFullName)
 
   Dim shell
   Set shell = WScript.CreateObject("WScript.Shell")
