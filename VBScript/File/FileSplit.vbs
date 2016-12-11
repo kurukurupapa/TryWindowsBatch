@@ -10,14 +10,20 @@ Option Explicit
 Dim scriptName, scriptDir
 Dim dateStr, timeStr, timestampStr
 Dim currentDir
+Dim fso
 Init
 
 ' 引数チェック
-If WScript.Arguments.Count >= 1 Then
-  If WScript.Arguments(0) = "/?" Then
-    WScript.Echo "使い方：cscript " & scriptName & " 分割サイズ ファイル"
-    WScript.Quit
-  End If
+Dim help
+help = False
+If WScript.Arguments.Count = 0 Then
+  help = True
+ElseIf WScript.Arguments(0) = "/?" Then
+  help = True
+End If
+If help Then
+  WScript.Echo "使い方：cscript " & scriptName & " 分割サイズ ファイル"
+  WScript.Quit
 End If
 If WScript.Arguments.Count <> 2 Then
   WScript.Echo "引数の数が不正です。"
@@ -34,8 +40,7 @@ Log "開始します。"
 
 ' ファイル読み込み
 Const ForReading = 1, ForWriting = 2, ForAppending = 8
-Dim fso, file, sizeCount, fileCount, text
-Set fso = CreateObject("Scripting.FileSystemObject")
+Dim file, sizeCount, fileCount, text
 Set file = fso.OpenTextFile(inPath, ForReading)
 sizeCount = 0
 fileCount = 0
@@ -58,6 +63,7 @@ Log "トータルサイズ=" & sizeCount & "byte"
 file.Close
 
 
+Set fso = Nothing
 Log "正常終了です。"
 WScript.Quit 0
 
@@ -91,8 +97,9 @@ End Sub
 
 ' 初期化処理
 Sub Init
+  Set fso = CreateObject("Scripting.FileSystemObject")
   scriptName = WScript.ScriptName
-  scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
+  scriptDir = fso.GetParentFolderName(WScript.ScriptFullName)
   dateStr = Year(Date()) & Right("0" & Month(Date()), 2) & Right("0" & Day(Date()), 2)
   timeStr = Right("0" & Hour(Time()), 2) & Right("0" & Minute(Time()), 2) & Right("0" & Second(Time()), 2)
   timestampStr = dateStr & "-" & timeStr
