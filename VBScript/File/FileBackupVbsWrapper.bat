@@ -17,7 +17,7 @@ if "%1"=="" (
   cscript //Nologo "%basedir%\%mainname%.vbs" >> "%logpath%" 2>&1
 ) else (
   for %%a in (%*) do (
-    cscript //Nologo "%basedir%\%mainname%.vbs" %%a >> "%logpath%" 2>&1
+    cscript //Nologo "%basedir%\%mainname%.vbs" "%%a" >> "%logpath%" 2>&1
   )
 )
 type "%logpath%"
