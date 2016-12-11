@@ -8,7 +8,6 @@
 Option Explicit
 
 Dim scriptName, scriptDir
-Dim dateStr, timeStr, timestampStr
 Dim currentDir
 Init
 
@@ -48,9 +47,6 @@ WScript.Quit 0
 Sub Init
   scriptName = WScript.ScriptName
   scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
-  dateStr = Replace(Date(), "/", "")
-  timeStr = Replace(Time(), ":", "")
-  timestampStr = dateStr & "-" & timeStr
 
   Dim shell
   Set shell = WScript.CreateObject("WScript.Shell")

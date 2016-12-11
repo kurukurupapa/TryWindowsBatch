@@ -27,7 +27,7 @@ If help Then
 End If
 If WScript.Arguments.Count <> 2 Then
   WScript.Echo "ˆø”‚Ì”‚ª•s³‚Å‚·B"
-  Abort
+  WScript.Quit 1
 End If
 Dim splitSize, inPath
 splitSize = WScript.Arguments(0)
