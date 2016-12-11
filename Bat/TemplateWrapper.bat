@@ -12,7 +12,32 @@ if "%input%"=="" set input=y
 if not "%input%"=="y" exit /b 1
 
 echo ƒƒOF%logpath%
-call "%basedir%\%mainname%.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9 > "%logpath%" 2>&1
+type nul > "%logpath%"
+
+rem ˆø”‚ð‚Ü‚Æ‚ß‚Ä“n‚·ê‡
+call "%basedir%\%mainname%.bat" %* >> "%logpath%" 2>&1
+
+rem ˆø”‚ð1‚Â‚¸‚Â“n‚·ê‡
+rem if "%1"=="" (
+rem   call "%basedir%\%mainname%.bat" >> "%logpath%" 2>&1
+rem ) else (
+rem   for %%a in (%*) do (
+rem     call "%basedir%\%mainname%.bat" "%%a" >> "%logpath%" 2>&1
+rem   )
+rem )
+
+rem ˆø”‚ÌƒtƒHƒ‹ƒ_‚ð“WŠJ‚µ‚Ä“n‚·ê‡
+rem if "%1"=="" (
+rem   call "%basedir%\%mainname%.bat" >> "%logpath%" 2>&1
+rem ) else (
+rem   for %%a in (%*) do (
+rem     for /F "usebackq" %%f in (`dir /b /s /a-d /on "%%a"`) do (
+rem       call "%basedir%\%mainname%.bat" "%%f" >> "%logpath%" 2>&1
+rem     )
+rem   )
+rem )
+
+type "%logpath%"
 
 pause
 exit /b 0

@@ -1,4 +1,5 @@
 @echo off
+@setlocal enabledelayedexpansion
 rem Windowsバッチファイルのテンプレートです。
 
 set basedir=%~dp0
@@ -25,8 +26,11 @@ echo basedir=%basedir%
 echo basename=%basename%
 echo batname=%batname%
 echo timestamp=%timestamp%
-echo 引数1=%1
-echo 引数2=%2
+set /a count=0
+for %%a in (%*) do (
+  set /a count+=1
+  echo 引数[!count!]=%%a
+)
 rem ▲▲▲ここに処理を書きます
 
 
