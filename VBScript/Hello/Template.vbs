@@ -8,11 +8,16 @@ Dim currentDir
 Init
 
 ' 引数チェック
-If WScript.Arguments.Count >= 1 Then
-  If WScript.Arguments(0) = "/?" Then
-    WScript.Echo "使い方：cscript " & scriptName & " [/?]"
-    WScript.Quit
-  End If
+Dim help
+help = False
+If WScript.Arguments.Count = 0 Then
+  help = True
+ElseIf WScript.Arguments(0) = "/?" Then
+  help = True
+End If
+If help Then
+  WScript.Echo "使い方：cscript " & scriptName & " [/?] 引数1 ..."
+  WScript.Quit
 End If
 
 ' 主処理
@@ -27,9 +32,11 @@ WScript.Echo "timeStr=" & timeStr
 WScript.Echo "timestampStr=" & timestampStr
 WScript.Echo "currentDir=" & currentDir
 
-Dim arg
+Dim arg, count
+count = 0
 For Each arg In WScript.Arguments
-  WScript.Echo arg
+  count = count + 1
+  WScript.Echo "Arguments[" & count & "]=" & arg
 Next
 ' ▲▲▲ここに処理を書きます
 
@@ -43,8 +50,8 @@ WScript.Quit 0
 Sub Init
   scriptName = WScript.ScriptName
   scriptDir = Left(WScript.ScriptFullName, InStrRev(WScript.ScriptFullName, "\") - 1)
-  dateStr = Replace(Date(), "/", "")
-  timeStr = Replace(Time(), ":", "")
+  dateStr = Year(Date()) & Right("0" & Month(Date()), 2) & Right("0" & Day(Date()), 2)
+  timeStr = Right("0" & Hour(Time()), 2) & Right("0" & Minute(Time()), 2) & Right("0" & Second(Time()), 2)
   timestampStr = dateStr & "-" & timeStr
 
   Dim shell

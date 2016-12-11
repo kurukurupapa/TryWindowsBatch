@@ -12,14 +12,25 @@ if "%input%"=="" set input=y
 if not "%input%"=="y" exit /b 1
 
 echo ƒƒOF%logpath%
+type nul > %logpath%
 
 rem ˆø”‚ğ‚Ü‚Æ‚ß‚Ä“n‚·ê‡
-cscript "%basedir%\%mainname%.vbs" %* > "%logpath%" 2>&1
+cscript "%basedir%\%mainname%.vbs" %* >> "%logpath%" 2>&1
 
 rem ˆø”‚ğ1‚Â‚¸‚Â“n‚·ê‡
-rem type nul > %logpath%
 rem for %%a in (%*) do (
 rem   cscript //Nologo "%basedir%\%mainname%.vbs" %%a >> "%logpath%" 2>&1
+rem )
+
+rem ˆø”‚ÌƒtƒHƒ‹ƒ_‚ğ“WŠJ‚µ‚Ä“n‚·ê‡
+rem if "%1"=="" (
+rem   cscript //Nologo "%basedir%\%mainname%.vbs" >> "%logpath%" 2>&1
+rem ) else (
+rem   for %%a in (%*) do (
+rem     for /F "usebackq" %%f in (`dir /b /s /a-d /on "%%a"`) do (
+rem       cscript //Nologo "%basedir%\%mainname%.vbs" "%%f" >> "%logpath%" 2>&1
+rem     )
+rem   )
 rem )
 
 pause

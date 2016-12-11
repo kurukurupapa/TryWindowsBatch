@@ -140,8 +140,8 @@ Sub Init
   scriptDir = fso.GetParentFolderName(WScript.ScriptFullName)
   baseName = fso.GetBaseName(scriptName)
   scriptExt = fso.GetExtensionName(scriptName)
-  dateStr = Replace(Date(), "/", "")
-  timeStr = Replace(Time(), ":", "")
+  dateStr = Year(Date()) & Right("0" & Month(Date()), 2) & Right("0" & Day(Date()), 2)
+  timeStr = Right("0" & Hour(Time()), 2) & Right("0" & Minute(Time()), 2) & Right("0" & Second(Time()), 2)
   timestampStr = dateStr & "-" & timeStr
 
   Dim shell
