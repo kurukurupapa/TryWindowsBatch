@@ -9,39 +9,44 @@ Dim fso
 Init
 
 ' 引数チェック
-Dim help
+Dim help, debug
 help = False
+debug = False
 If WScript.Arguments.Count = 0 Then
   help = True
 ElseIf WScript.Arguments(0) = "/?" Then
   help = True
 End If
 If help Then
-  WScript.Echo "使い方：cscript " & scriptName & " [/?] ファイル/フォルダ"
+  WScript.Echo "使い方：cscript " & scriptName & " [/?] ファイル/フォルダ ..."
   WScript.Quit
 End If
-Dim inPath
-inPath = WScript.Arguments(0)
 
 ' 主処理
 Log "開始します。"
 
 
-Dim dir, name, ext, outPath
-If fso.FolderExists(inPath) Then
-  dir = fso.GetParentFolderName(inPath)
-  name = fso.GetFileName(inPath)
-  outPath = fso.BuildPath(dir, name & "_bk" & timestampStr)
-  fso.CopyFolder inPath, outPath
-ElseIf fso.FileExists(inPath) Then
-  dir = fso.GetParentFolderName(inPath)
-  name = fso.GetBaseName(inPath)
-  ext = fso.GetExtensionName(inPath)
-  outPath = fso.BuildPath(dir, name & "_bk" & timestampStr & "." & ext)
-  fso.CopyFile inPath, outPath
-Else
-  WScript.Echo "ファイル/フォルダではありません。arg=" & inPath
-End If
+Dim arg
+For Each arg In WScript.Arguments
+  Dim dir, name, ext, outPath
+  If fso.FolderExists(arg) Then
+    dir = fso.GetParentFolderName(arg)
+    name = fso.GetFileName(arg)
+    outPath = fso.BuildPath(dir, name & "_bk" & timestampStr)
+    fso.CopyFolder arg, outPath
+  ElseIf fso.FileExists(arg) Then
+    dir = fso.GetParentFolderName(arg)
+    name = fso.GetBaseName(arg)
+    ext = fso.GetExtensionName(arg)
+    If Len(ext) > 0 Then
+      ext = "." & ext
+    End If
+    outPath = fso.BuildPath(dir, name & "_bk" & timestampStr & ext)
+    fso.CopyFile arg, outPath
+  Else
+    WScript.Echo "ファイル/フォルダではありません。arg=" & arg
+  End If
+Next
 
 
 Set fso = Nothing
@@ -72,5 +77,7 @@ End Sub
 
 ' メッセージ出力
 Sub Log(msg)
-  WScript.Echo Now() & " " & scriptName & " " & msg
+  If debug Then
+    WScript.Echo Now() & " " & scriptName & " " & msg
+  End If
 End Sub
