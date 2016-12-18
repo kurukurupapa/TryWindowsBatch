@@ -14,53 +14,90 @@ Dim fso
 Init
 
 ' 引数チェック
-Dim help
+Dim help, debug
 help = False
+debug = False
 If WScript.Arguments.Count = 0 Then
   help = True
 ElseIf WScript.Arguments(0) = "/?" Then
   help = True
 End If
 If help Then
-  WScript.Echo "使い方：cscript " & scriptName & " 分割サイズ ファイル"
+  WScript.Echo "使い方：cscript " & scriptName & " 分割サイズ 単位 ファイル"
   WScript.Quit
 End If
-If WScript.Arguments.Count <> 2 Then
+If WScript.Arguments.Count <> 3 Then
   WScript.Echo "引数の数が不正です。"
   WScript.Quit 1
 End If
-Dim splitSize, inPath
+Dim splitSize, splitUnit, inPath
 splitSize = WScript.Arguments(0)
-inPath = WScript.Arguments(1)
+splitUnit = WScript.Arguments(1)
+inPath = WScript.Arguments(2)
 
+Select Case LCase(splitUnit)
+  Case "byte"
+    ' 何もしない
+  Case "line"
+    ' 何もしない
+  Case Else
+    WScript.Echo "不正な引数です。arg=" + splitUnit
+    WScript.Quit 1
+End Select
 
 ' 主処理
 Log "開始します。"
 
 
-' ファイル読み込み
+' 準備
 Const ForReading = 1, ForWriting = 2, ForAppending = 8
-Dim file, sizeCount, fileCount, text
-Set file = fso.OpenTextFile(inPath, ForReading)
+Dim inFile, outFile, outPath, sizeCount, fileCount
+Set inFile = Nothing
+Set outFile = Nothing
 sizeCount = 0
 fileCount = 0
-text = ""
-Do Until file.AtEndOfStream
-  Dim line
-  line = file.ReadLine
-  'sizeCount = sizeCount + Lenb(line) + Lenb(vbNewLine)
-  sizeCount = sizeCount + LenSjis(line) + LenSjis(vbNewLine)
-  text = text & line & vbNewLine
 
-  If (sizeCount > splitSize * (fileCount + 1)) Or (file.AtEndOfStream) Then
-    ' ファイル書き込み
+' 入力ファイルオープン
+Set inFile = fso.OpenTextFile(inPath, ForReading)
+
+' 入力ファイル読み込み
+Do Until inFile.AtEndOfStream
+  ' 1行読み込み
+  Dim line
+  line = inFile.ReadLine
+  Select Case LCase(splitUnit)
+    Case "byte"
+      sizeCount = sizeCount + LenSjis(line) + LenSjis(vbNewLine)
+    Case "line"
+      sizeCount = sizeCount + 1
+  End Select
+
+  ' 出力ファイルオープン
+  If outFile Is Nothing Then
     fileCount = fileCount + 1
-    Save inPath, fileCount, text
-    text = ""
+    outPath = GetOutPath(inPath, fileCount)
+    Set outFile = OpenFile(outPath)
+  End If
+
+  ' 出力ファイル書き込み
+  outFile.WriteLine line
+
+  ' 出力ファイルクローズ
+  If (sizeCount >= splitSize * fileCount) Or (inFile.AtEndOfStream) Then
+    CloseFile outPath, outFile
+    Set outFile = Nothing
   End If
 Loop
-Log "トータルサイズ=" & sizeCount & "byte"
-file.Close
+
+' 出力ファイルクローズ
+If Not outFile Is Nothing Then
+  CloseFile outPath, outFile
+  Set outFile = Nothing
+End If
+
+' 入力ファイルクローズ
+inFile.Close
+Set inFile = Nothing
 
 
 Set fso = Nothing
@@ -84,15 +121,28 @@ Function LenSjis(str)
   LenSjis = size
 End Function
 
-' ファイル書き込み
-Sub Save(inPath, count, text)
-  Dim outPath, file
-  outPath = inPath & "." & count & ".txt"
+' 出力パスの組み立て
+Function GetOutPath(inPath, count)
+  Dim ext
+  ext = fso.GetExtensionName(inPath)
+  If Len(ext) > 0 Then
+    ext = "." & ext
+  End If
+  GetOutPath = fso.GetParentFolderName(inPath) & "\" & fso.GetBaseName(inPath) & "." & count & ext
+End Function
+
+' ファイルオープン
+Function OpenFile(outPath)
+  Dim file
   Set file = fso.OpenTextFile(outPath, ForWriting, True)
-  file.Write(text)
+  Set OpenFile = file
+End Function
+
+' ファイルクローズ
+Sub CloseFile(outPath, file)
   file.Close
   Set file = Nothing
-  Log "分割後ファイル=" & outPath & ",サイズ=" & LenSjis(text)
+  WScript.Echo "分割後ファイル=" & outPath
 End Sub
 
 ' 初期化処理
@@ -117,5 +167,7 @@ End Sub
 
 ' メッセージ出力
 Sub Log(msg)
-  WScript.Echo Now() & " " & scriptName & " " & msg
+  If debug Then
+    WScript.Echo Now() & " " & scriptName & " " & msg
+  End If
 End Sub

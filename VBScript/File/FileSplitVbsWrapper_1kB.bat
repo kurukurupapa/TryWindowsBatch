@@ -5,7 +5,7 @@ set basedir=%~dp0
 set basename=%~n0
 set batname=%~n0%~x0
 set mainname=FileSplit
-set logpath=%CD%\%mainname%.log
+set logpath=%basedir%\%mainname%.log
 
 rem set /p input=ŠJn‚µ‚Ä‚æ‚ë‚µ‚¢‚Å‚·‚©H (y/n[y])
 rem if "%input%"=="" set input=y
