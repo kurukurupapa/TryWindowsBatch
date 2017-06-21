@@ -18,20 +18,20 @@ rem ˆø”‚ð‚Ü‚Æ‚ß‚Ä“n‚·ê‡
 call "%basedir%\%mainname%.bat" %* >> "%logpath%" 2>&1
 
 rem ˆø”‚ð1‚Â‚¸‚Â“n‚·ê‡
-rem if "%1"=="" (
+rem if "%~1"=="" (
 rem   call "%basedir%\%mainname%.bat" >> "%logpath%" 2>&1
 rem ) else (
 rem   for %%a in (%*) do (
-rem     call "%basedir%\%mainname%.bat" "%%a" >> "%logpath%" 2>&1
+rem     call "%basedir%\%mainname%.bat" "%%~a" >> "%logpath%" 2>&1
 rem   )
 rem )
 
 rem ˆø”‚ÌƒtƒHƒ‹ƒ_‚ð“WŠJ‚µ‚Ä“n‚·ê‡
-rem if "%1"=="" (
+rem if "%~1"=="" (
 rem   call "%basedir%\%mainname%.bat" >> "%logpath%" 2>&1
 rem ) else (
 rem   for %%a in (%*) do (
-rem     for /F "usebackq" %%f in (`dir /b /s /a-d /on "%%a"`) do (
+rem     for /F "usebackq delims=" %%f in (`dir /b /s /a-d /on "%%~a"`) do (
 rem       call "%basedir%\%mainname%.bat" "%%f" >> "%logpath%" 2>&1
 rem     )
 rem   )
