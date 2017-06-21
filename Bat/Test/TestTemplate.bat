@@ -1,6 +1,6 @@
 @echo off
 @setlocal enabledelayedexpansion
-rem ファイルのハッシュ（MD5）を出力します。
+rem テストします。
 
 set basedir=%~dp0
 set basename=%~n0
@@ -21,9 +21,20 @@ call :LOG 処理開始します。
 
 
 
-for %%a in (%*) do (
-  certutil -hashfile "%%~a" MD5
-)
+rem ▼▼▼ここに処理を書きます
+set prjdir=%basedir%\..
+set sut=%prjdir%\%basename:Test=%.bat
+set datadir=%prjdir%\Data
+
+call :LOG ---ヘルプ
+call %sut% "/?"
+call :LOG ---引数なし
+call %sut%
+call :LOG ---1ファイル
+call %sut% %datadir%\Dummy.txt
+call :LOG ---複数ファイル（空白あり）
+call %sut% %datadir%\Dummy.txt %datadir%\Dummy2.txt "%datadir%\Space Dir\Space File.txt"
+rem ▲▲▲ここに処理を書きます
 
 
 

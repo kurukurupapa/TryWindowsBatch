@@ -11,7 +11,7 @@ set timestr=%timestrtmp:~0,2%%timestrtmp:~3,2%%timestrtmp:~6,2%
 set timestamp=%datestr%-%timestr%
 
 :INIT
-if "%1"=="/?" (
+if "%~1"=="/?" (
   echo g‚¢•ûF%batname% [/?]
   exit /b 0
 )
@@ -29,7 +29,7 @@ echo timestamp=%timestamp%
 set /a count=0
 for %%a in (%*) do (
   set /a count+=1
-  echo ˆø”[!count!]=%%a
+  echo ˆø”[!count!]="%%~a"
 )
 rem £££‚±‚±‚Éˆ—‚ğ‘‚«‚Ü‚·
 

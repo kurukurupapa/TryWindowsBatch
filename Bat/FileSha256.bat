@@ -1,6 +1,6 @@
 @echo off
 @setlocal enabledelayedexpansion
-rem ファイルのハッシュ（MD5）を出力します。
+rem ファイルのハッシュ（SHA256）を出力します。
 
 set basedir=%~dp0
 set basename=%~n0
@@ -22,7 +22,7 @@ call :LOG 処理開始します。
 
 
 for %%a in (%*) do (
-  certutil -hashfile "%%~a" MD5
+  certutil -hashfile "%%~a" SHA256
 )
 
 
