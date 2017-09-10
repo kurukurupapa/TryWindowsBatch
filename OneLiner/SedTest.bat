@@ -25,10 +25,16 @@ call :LOG 処理開始します。
 
 rem 準備
 set inpath=%basedir%\Data\Sample.txt
+set outdir=%CD%
 set before=abc
 set after=_abc_
 set winmerge=D:\Apps\WinMerge\WinMergeU.exe /s
+set PATH=%PATH%;D:\Apps\gnuwin32\bin
 @echo on
+
+rem GnuWin32
+@set outpath=%outdir%\%basename%_gnuwin32.txt
+sed "s/%before%/%after%/g" %inpath% > %outpath%
 
 rem Windows標準コマンド
 @rem Windowsバッチファイルでは、記号「%」を「%%」へエスケープが必要。
@@ -44,7 +50,8 @@ powershell -Command "cat %inpath% | %% { $_ -Replace '%before%', '%after%' }" > 
 
 @rem 後処理
 @echo off
-start %winmerge% %outdir%\%basename%_for1.txt %outdir%\%basename%_ps.txt
+start %winmerge% %outdir%\%basename%_gnuwin32.txt %outdir%\%basename%_for1.txt
+start %winmerge% %outdir%\%basename%_gnuwin32.txt %outdir%\%basename%_ps.txt
 
 
 

@@ -28,7 +28,7 @@ rem 記号「^」は行連結文字。エスケープしたいときは「^」とする。
 set inpath=%basedir%\Data\Sample.txt
 set incsv=%basedir%\Data\Sample.csv
 set num=20
-set outdir=%basedir%\Work
+set outdir=%CD%
 set winmerge=D:\Apps\WinMerge\WinMergeU.exe /s
 set PATH=%PATH%;D:\Apps\gnuwin32\bin
 rem @echo on
@@ -41,8 +41,15 @@ split -l %num% %inpath% %outprefix%
 rem Check
 dir %outprefix%*
 
-rem Windows標準コマンド
-rem 標準コマンドでは実現できない？
+rem Windows標準コマンド for文1
+@rem 空行は読み飛ばされる。
+@rem 「setlocal enabledelayedexpansion」を指定している場合、「!」や「!」で括られた文字列が消える。
+@rem ここでは、記号「%」を「%%」へエスケープしている。
+@set outprefix=%outdir%\%basename%_line_for1_
+@del /q %outprefix%*
+set i=0 & set j=0 & (for /f "delims= eol=" %%a in (%inpath%) do (set /a tmp=!i! %% %num% & (if !tmp!==0 set /a j=!j!+1) & (echo %%a)>>%outprefix%!j!.txt & set /a i=!i!+1))
+rem Check
+dir %outprefix%*
 
 rem PowerShell
 @rem エイリアス cat -> Get-Content
@@ -73,6 +80,7 @@ dir %outprefix%*
 
 @echo off
 rem 後処理
+fc %outdir%\%basename%_line_gnuwin32.txt.aa %outdir%\%basename%_line_for1_1.txt
 fc %outdir%\%basename%_key_gnuwin32_A.csv %outdir%\%basename%_key_ps_A.csv
 
 
