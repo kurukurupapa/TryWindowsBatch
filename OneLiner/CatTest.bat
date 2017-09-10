@@ -25,12 +25,16 @@ call :LOG 処理開始します。
 
 rem 準備
 set inpath=%basedir%\Data\Sample.txt
-set outdir=%basedir%\Work
+set outdir=%CD%
 set outpath=%outdir%\%basename%_Sample.txt
 set winmerge=D:\Apps\WinMerge\WinMergeU.exe /s
 rem @echo on
 
-rem Windows標準コマンド
+rem GnuWin32
+@set outpath=%outdir%\%basename%_gnuwin32.txt
+cat %inpath% > %outpath%
+@rem Check
+fc %inpath% %outpath%
 
 rem Windows標準コマンド typeコマンド
 @set outpath=%outdir%\%basename%_type.txt
@@ -47,7 +51,7 @@ rem Windows標準コマンド for文1 簡易版
 @set outpath=%outdir%\%basename%_for1.txt
 (for /f %%a in (%inpath%) do (echo %%a)) > %outpath%
 @rem Check
-fc %inpath% %outpath%
+rem fc %inpath% %outpath%
 
 rem Windows標準コマンド for文2 改善版
 @rem トークン分割、コメント行判定を行わない。
@@ -57,7 +61,7 @@ rem Windows標準コマンド for文2 改善版
 @set outpath=%outdir%\%basename%_for2.txt
 (for /f "delims= eol=" %%a in (%inpath%) do (echo %%a)) > %outpath%
 @rem Check
-fc %inpath% %outpath%
+rem fc %inpath% %outpath%
 
 rem Windows標準コマンド for文3 改善版
 @rem /fオプションでテキストファイルの中身を処理できる。
@@ -71,21 +75,29 @@ rem Windows標準コマンド for文3 改善版
 @set outpath=%outdir%\%basename%_for3.txt
 (for /f "tokens=1* delims=: eol=" %%a in ('findstr /n "^" %inpath%') do (echo.%%b)) > %outpath%
 @rem Check
-fc %inpath% %outpath%
+rem fc %inpath% %outpath%
 
 rem Windows標準コマンド for文4 改善版
-@rem 上記for文3に比べて、行頭「:」が削除されない。
+@rem 上記for文3に比べて、行頭「:」を残すことができる。
 @rem 参照
 @rem バッチファイル | テキストファイルを 1 行ずつ読み込む (完全版？) ( その他コンピュータ ) - Kerupani129 Project のブログ - Yahoo!ブログ
 @rem https://blogs.yahoo.co.jp/kerupani/15344574.html
 @set outpath=%outdir%\%basename%_for4.txt
 (for /f "tokens=* delims=0123456789 eol=" %%a in ('findstr /n "^" %inpath%') do (set v=%%a& echo.!v:~1!)) > %outpath%
 @rem Check
-fc %inpath% %outpath%
+rem fc %inpath% %outpath%
 
 rem PowerShell
 @set outpath=%outdir%\%basename%_ps.txt
 powershell -Command "Get-Content %inpath%" > %outpath%
+@rem Check
+fc %inpath% %outpath%
+
+rem Ruby
+@rem デフォルトの外部/内部エンコーディングはWindows-31Jの模様。そのため入力出力ファイルをWindows-31Jと見なす。
+@rem 必要ならrubyコマンドの-Eオプションでエンコーディングを指定する。
+@set outpath=%outdir%\%basename%_ruby.txt
+ruby -ne "puts $_" %inpath% > %outpath%
 @rem Check
 fc %inpath% %outpath%
 
