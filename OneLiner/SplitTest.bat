@@ -24,7 +24,6 @@ call :LOG 処理開始します。
 
 
 rem 準備
-rem 記号「^」は行連結文字。エスケープしたいときは「^」とする。
 set inpath=%basedir%\Data\Sample.txt
 set incsv=%basedir%\Data\Sample.csv
 set num=20
@@ -70,16 +69,25 @@ awk -F "," "NR>1 {tmp=$3; gsub(\"Group\",\"\",tmp); path=\"%outprefix2%\" tmp \"
 rem Check
 dir %outprefix%*
 
-rem PowerShell
+rem PowerShell ファイル追記方式
 @rem エイリアス cat -> Get-Content
-@set outprefix=%outdir%\%basename%_key_ps_
+@set outprefix=%outdir%\%basename%_key_ps_append_
 @del /q %outprefix%*
 powershell -Command "cat %incsv% | Select-Object -Skip 1 | %%{ $tmp=$_.Split(',')[2].Replace('Group',''); $path='%outprefix%'+$tmp+'.csv'; $_ | Out-File -Append -Encoding Default $path }"
 rem Check
 dir %outprefix%*
 
+rem PowerShell ハッシュ方式
+@rem エイリアス cat -> Get-Content
+@set outprefix=%outdir%\%basename%_key_ps_hash_
+@set column=2
+@del /q %outprefix%*
+powershell -Command "$hash=@{}; cat %incsv% | Select-Object -Skip 1 | %%{ $key=$_.Split(',')[%column%-1].Replace('Group',''); if(!$hash.ContainsKey($key)){$hash[$key]=[Collections.ArrayList]@()}; $hash[$key].Add($_) }; foreach($k in $hash.Keys){ $path='%outprefix%'+$k+'.csv'; Set-Content -Value $hash[$k] $path }"
+rem Check
+dir %outprefix%*
+
+@rem 後処理
 @echo off
-rem 後処理
 fc %outdir%\%basename%_line_gnuwin32.txt.aa %outdir%\%basename%_line_for1_1.txt
 fc %outdir%\%basename%_key_gnuwin32_A.csv %outdir%\%basename%_key_ps_A.csv
 
