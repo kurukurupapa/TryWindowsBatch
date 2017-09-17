@@ -52,6 +52,13 @@ rem Check
 fc %outdir%\%basename%_gnuwin32.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.txt %outpath%)
 
+rem Perl
+set outpath=%outdir%\%basename%_perl.txt
+perl -aF, -ne "print \"$F[0],$F[1],$F[3]\n\"" %inpath% > %outpath%
+rem Check
+fc %outdir%\%basename%_gnuwin32.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.txt %outpath%)
+
 rem Ruby
 rem デフォルトの外部/内部エンコーディングはWindows-31Jの模様。そのため入力出力ファイルをWindows-31Jと見なす。
 rem 必要ならrubyコマンドの-Eオプションでエンコーディングを指定する。

@@ -56,6 +56,13 @@ rem Check
 fc %outdir%\%basename%_ok.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
+rem Ruby
+set outpath=%outdir%\%basename%_ruby.txt
+ruby -pne "$_.gsub^!(/%before%/,\"%after%\")" %inpath% > %outpath%
+rem Check
+fc %outdir%\%basename%_ok.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
+
 rem Œãˆ—
 echo off
 

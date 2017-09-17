@@ -62,6 +62,13 @@ rem Check
 fc %outdir%\%basename%_ok.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
+rem Perl
+set outpath=%outdir%\%basename%_perl.txt
+perl -ne "print if 1..%num%" %inpath% > %outpath%
+rem Check
+fc %outdir%\%basename%_ok.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
+
 rem Œãˆ—
 echo off
 
