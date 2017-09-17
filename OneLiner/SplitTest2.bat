@@ -1,9 +1,10 @@
 @echo off
 @setlocal enabledelayedexpansion
-rem Splitライクコマンドの各種ワンライナーです。（パフォーマンステスト）
+rem splitコマンドライクの各種ワンライナーです。（パフォーマンステスト）
 
 set basedir=%~dp0
 set basename=%~n0
+set batdir=%~dp0
 set batname=%~n0%~x0
 set datestr=%DATE:/=%
 set timestrtmp=%TIME: =0%
@@ -24,48 +25,52 @@ call :LOG 処理開始します。
 
 
 rem 準備
+call %batdir%\Setting.bat
 set inpath=.\dummy_1000MB.csv
 set num=100000
 set inpath_small=.\dummy_10MB.csv
 set num_small=10000
 set outdir=.
-set PATH=%PATH%;D:\Apps\gnuwin32\bin
-rem @echo on
+rem echo on
 
 rem --- 行数でファイル分割
 
 rem GnuWin32
-@set outprefix=%outdir%\%basename%_line_gnuwin32.txt.
-@echo %DATE% %TIME% GnuWin32 START
-split -l %num% %inpath% %outprefix%
-@echo %DATE% %TIME% GnuWin32 END
+set outprefix=%outdir%\%basename%_line_gnuwin32.txt.
+echo %DATE% %TIME% GnuWin32 START %inpath%
+set start=%DATE% %TIME%
+%gnubin%\split -l %num% %inpath% %outprefix%
+set end=%DATE% %TIME%
+echo %DATE% %TIME% GnuWin32 END
+powershell -Command "$t=New-TimeSpan '%start%' '%end%'; $t.TotalMinutes.ToString('0.#')+'分'"
 rem Check
 rem dir %outprefix%*
 
 rem Windows標準コマンド for文1
-@rem 空行は読み飛ばされる。
-@rem 「setlocal enabledelayedexpansion」を指定している場合、「!」や「!」で括られた文字列が消える。
-@rem ここでは、記号「%」を「%%」へエスケープしている。
-@set outprefix=%outdir%\%basename%_line_for1_
-@del /q %outprefix%*
-@echo 入力ファイル=%inpath_small%
-@echo %DATE% %TIME% Windows標準コマンドfor文1 START
-(set /a i=0)&(set /a j=0)&(for /f "delims= eol=" %%a in (%inpath_small%) do ((set /a tmp=!i! %% %num_small%)&(if !tmp!==0 (set /a j=!j!+1)&(set jstr=00!j!)&(set jstr=!jstr:~-3!))&((echo %%a)>>%outprefix%!jstr!.txt)&(set /a i=!i!+1)))
-@echo %DATE% %TIME% Windows標準コマンドfor文1 END
+set outprefix=%outdir%\%basename%_line_for1_
+del /q %outprefix%*
+echo %DATE% %TIME% Windows標準コマンドfor文1 START %inpath_small%
+set start=%DATE% %TIME%
+set i=0 & set j=0 & (for /f "delims= eol=" %%a in (%inpath_small%) do (set /a tmp=!i! %% %num_small% & (if !tmp!==0 (set /a j=!j!+1)&(set jstr=00!j!)&(set jstr=!jstr:~-3!)) & (echo %%a)>>%outprefix%!jstr!.txt & set /a i=!i!+1))
+set end=%DATE% %TIME%
+echo %DATE% %TIME% Windows標準コマンドfor文1 END
+powershell -Command "$t=New-TimeSpan '%start%' '%end%'; $t.TotalMinutes.ToString('0.#')+'分'"
 rem Check
 rem dir %outprefix%*
 
 rem PowerShell
-@rem エイリアス cat -> Get-Content
-@set outprefix=%outdir%\%basename%_line_ps_
-@echo %DATE% %TIME% PowerShell START
-powershell -Command "$i=0; cat %inpath% -ReadCount %num% | %%{ $path='%outprefix%'+([string]($i+1)).PadLeft(3,'0')+'.txt'; Set-Content -Value $_ $path; $i++ }"
-@echo %DATE% %TIME% PowerShell END
+set outprefix=%outdir%\%basename%_line_ps_
+echo %DATE% %TIME% PowerShell START %inpath%
+set start=%DATE% %TIME%
+powershell -Command "$i=0; cat %inpath% -ReadCount %num% | %%{ Set-Content -Value $_ ('%outprefix%'+([string]($i+1)).PadLeft(3,'0')+'.txt'); $i++ }"
+set end=%DATE% %TIME%
+echo %DATE% %TIME% PowerShell END
+powershell -Command "$t=New-TimeSpan '%start%' '%end%'; $t.TotalMinutes.ToString('0.#')+'分'"
 rem Check
 rem dir %outprefix%*
 
-@rem 後処理
-@echo off
+rem 後処理
+echo off
 
 
 

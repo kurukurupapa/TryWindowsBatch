@@ -1,9 +1,10 @@
 @echo off
 @setlocal enabledelayedexpansion
-rem Sedライクコマンドの各種ワンライナーです。
+rem sedコマンドライクの各種ワンライナーです。
 
 set basedir=%~dp0
 set basename=%~n0
+set batdir=%~dp0
 set batname=%~n0%~x0
 set datestr=%DATE:/=%
 set timestrtmp=%TIME: =0%
@@ -24,34 +25,39 @@ call :LOG 処理開始します。
 
 
 rem 準備
-set inpath=%basedir%\Data\Sample.txt
+call %batdir%\Setting.bat
+set inpath=%batdir%\Data\Sample.txt
 set outdir=%CD%
 set before=abc
 set after=_abc_
-set winmerge=D:\Apps\WinMerge\WinMergeU.exe /s
-set PATH=%PATH%;D:\Apps\gnuwin32\bin
-@echo on
+rem echo on
 
 rem GnuWin32
-@set outpath=%outdir%\%basename%_gnuwin32.txt
-sed "s/%before%/%after%/g" %inpath% > %outpath%
+set outpath=%outdir%\%basename%_gnuwin32.txt
+%gnubin%\sed "s/%before%/%after%/g" %inpath% > %outpath%
+rem Check
+copy %outpath% %outdir%\%basename%_ok.txt > nul
 
-rem Windows標準コマンド
-@rem Windowsバッチファイルでは、記号「%」を「%%」へエスケープが必要。
-@rem 空行は読み飛ばされる。
-@set outpath=%outdir%\%basename%_for1.txt
+rem Windows標準コマンド for文
+rem Windowsバッチファイルでは、記号「%」を「%%」へエスケープが必要。
+rem 空行は読み飛ばされる。
+set outpath=%outdir%\%basename%_for1.txt
 (for /f "delims= eol=" %%a in (%inpath%) do @((set v=%%a) & (echo !v:%before%=%after%!))) > %outpath%
+rem Check
+fc %outdir%\%basename%_ok.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
 rem PowerShell
-@rem Windowsバッチファイルでは、記号「%」を「%%」へエスケープが必要。
-@rem エイリアス cat -> Get-Content
-@set outpath=%outdir%\%basename%_ps.txt
-powershell -Command "cat %inpath% | %% { $_ -Replace '%before%', '%after%' }" > %outpath%
+rem Windowsバッチファイルでは、記号「%」を「%%」へエスケープが必要。
+rem エイリアス cat -> Get-Content
+set outpath=%outdir%\%basename%_ps.txt
+powershell -Command "cat %inpath% | %%{ $_ -Replace '%before%', '%after%' } | Out-File -Encoding Default %outpath%"
+rem Check
+fc %outdir%\%basename%_ok.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
-@rem 後処理
-@echo off
-start %winmerge% %outdir%\%basename%_gnuwin32.txt %outdir%\%basename%_for1.txt
-start %winmerge% %outdir%\%basename%_gnuwin32.txt %outdir%\%basename%_ps.txt
+rem 後処理
+echo off
 
 
 

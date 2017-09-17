@@ -1,9 +1,10 @@
 @echo off
 @setlocal enabledelayedexpansion
-rem Headライクコマンドの各種ワンライナーです。
+rem headコマンドライクの各種ワンライナーです。
 
 set basedir=%~dp0
 set basename=%~n0
+set batdir=%~dp0
 set batname=%~n0%~x0
 set datestr=%DATE:/=%
 set timestrtmp=%TIME: =0%
@@ -24,11 +25,17 @@ call :LOG 処理開始します。
 
 
 rem 準備
-set inpath=.\Data\Sample.txt
+call %batdir%\Setting.bat
+set inpath=%batdir%\Data\Sample.txt
 set num=3
 set /a index=%num%-1
-set winmerge=D:\Apps\WinMerge\WinMergeU.exe /s
-rem @echo on
+rem echo on
+
+rem GnuWin32
+set outpath=%outdir%\%basename%_gnuwin32.txt
+%gnubin%\head -n %num% %inpath% > %outpath%
+rem Check
+copy %outpath% %outdir%\%basename%_ok.txt > nul
 
 rem Windows標準コマンド for文1
 rem 空行は読み飛ばされる。
@@ -38,24 +45,25 @@ rem 下記コマンドをコマンドラインから実行する場合、for文の変数の頭「%%」は「%」と
 set outpath=%outdir%\%basename%_for1.txt
 set i=0 & (for /f "delims= eol=" %%a in (%inpath%) do ( if !i! lss %num% (echo %%a) & set /a i=!i!+1 )) > %outpath%
 rem Check
-rem fc %inpath% %outpath%
+fc %outdir%\%basename%_ok.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
 rem PowerShell 2.0
 set outpath=%outdir%\%basename%_ps2.txt
 powershell -Command "(Get-Content %inpath%)[0..%index%]" > %outpath%
 rem Check
-rem fc %inpath% %outpath%
+fc %outdir%\%basename%_ok.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
 rem PowerShell 3.0以上
 set outpath=%outdir%\%basename%_ps3.txt
 powershell -Command "Get-Content %inpath% -Head %num%" > %outpath%
 rem Check
-rem fc %inpath% %outpath%
+fc %outdir%\%basename%_ok.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
-@echo off
 rem 後処理
-start %winmerge% %outdir%\%basename%_ps3.txt %outdir%\%basename%_ps2.txt
-start %winmerge% %outdir%\%basename%_ps3.txt %outdir%\%basename%_for1.txt
+echo off
 
 
 

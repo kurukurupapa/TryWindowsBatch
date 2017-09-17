@@ -1,9 +1,10 @@
 @echo off
 @setlocal enabledelayedexpansion
-rem Tailライクコマンドの各種ワンライナーです。
+rem tailコマンドライクの各種ワンライナーです。
 
 set basedir=%~dp0
 set basename=%~n0
+set batdir=%~dp0
 set batname=%~n0%~x0
 set datestr=%DATE:/=%
 set timestrtmp=%TIME: =0%
@@ -24,10 +25,10 @@ call :LOG 処理開始します。
 
 
 rem 準備
-set inpath=.\Data\Sample.txt
+call %batdir%\Setting.bat
+set inpath=%batdir%\Data\Sample.txt
 set num=3
-set winmerge=D:\Apps\WinMerge\WinMergeU.exe /s
-rem @echo on
+rem echo on
 
 rem Windows標準コマンド
 rem 実装方法が思い浮かばない。

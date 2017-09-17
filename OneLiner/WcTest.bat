@@ -1,9 +1,10 @@
 @echo off
 @setlocal enabledelayedexpansion
-rem wc -l ライクコマンドの各種ワンライナーです。
+rem wc -l コマンドライクの各種ワンライナーです。
 
 set basedir=%~dp0
 set basename=%~n0
+set batdir=%~dp0
 set batname=%~n0%~x0
 set datestr=%DATE:/=%
 set timestrtmp=%TIME: =0%
@@ -24,10 +25,11 @@ call :LOG 処理開始します。
 
 
 rem 準備
-set inpath=.\Data\Sample.txt
+call %batdir%\Setting.bat
+set inpath=%batdir%\Data\Sample.txt
 set num=3
 set /a index=%num%-1
-rem @echo on
+rem echo on
 
 rem Windows標準コマンド for文1
 rem 空行は読み飛ばされる。
@@ -42,6 +44,9 @@ set i=0 & (for /f "tokens=1* delims=: eol=" %%a in ('findstr /n "^" %inpath%') d
 
 rem PowerShell
 powershell -Command "$(Get-Content %inpath%).Length"
+
+rem Ruby
+ruby -ne "BEGIN{count=0}; count+=1; END{puts count}" %inpath%
 
 @echo off
 rem 後処理
