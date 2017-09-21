@@ -29,6 +29,7 @@ call %batdir%\Setting.bat
 set inpath=%batdir%\Data\Sample.txt
 set num=3
 set /a index=%num%-1
+set outdir=%CD%
 rem echo on
 
 rem GnuWin32
@@ -49,14 +50,23 @@ fc %outdir%\%basename%_ok.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
 rem PowerShell 2.0
-set outpath=%outdir%\%basename%_ps2.txt
+rem 全行を読み込むのでパフォーマンス悪い。
+set outpath=%outdir%\%basename%_ps_array.txt
 powershell -Command "(Get-Content %inpath%)[0..%index%]" > %outpath%
 rem Check
 fc %outdir%\%basename%_ok.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
 
+rem PowerShell 2.0
+rem 全行を読み込むのでパフォーマンス悪い。
+set outpath=%outdir%\%basename%_ps_select.txt
+powershell -Command "Get-Content %inpath% | Select-Object -First %num%" > %outpath%
+rem Check
+fc %outdir%\%basename%_ok.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)
+
 rem PowerShell 3.0以上
-set outpath=%outdir%\%basename%_ps3.txt
+set outpath=%outdir%\%basename%_ps_cat.txt
 powershell -Command "Get-Content %inpath% -Head %num%" > %outpath%
 rem Check
 fc %outdir%\%basename%_ok.txt %outpath% > nul

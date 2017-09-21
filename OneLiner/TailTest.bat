@@ -28,26 +28,41 @@ rem 準備
 call %batdir%\Setting.bat
 set inpath=%batdir%\Data\Sample.txt
 set num=3
+set outdir=%CD%
 rem echo on
+
+rem GnuWin32
+set outpath=%outdir%\%basename%_gnuwin32.txt
+%gnubin%\tail -n %num% %inpath% > %outpath%
 
 rem Windows標準コマンド
 rem 実装方法が思い浮かばない。
 
 rem PowerShell 2.0
-set outpath=%outdir%\%basename%_ps2.txt
+rem 全行を読み込むのでパフォーマンス悪い。
+set outpath=%outdir%\%basename%_ps_arr.txt
 powershell -Command "(Get-Content %inpath%)[-%num%..-1]" > %outpath%
 rem Check
-rem fc %inpath% %outpath%
+fc %outdir%\%basename%_gnuwin32.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.txt %outpath%)
+
+rem PowerShell 2.0
+rem 全行を読み込むのでパフォーマンス悪い。
+set outpath=%outdir%\%basename%_ps_select.txt
+powershell -Command "Get-Content %inpath% | Select-Object -Last %num%" > %outpath%
+rem Check
+fc %outdir%\%basename%_gnuwin32.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.txt %outpath%)
 
 rem PowerShell 3.0以上
-set outpath=%outdir%\%basename%_ps3.txt
+set outpath=%outdir%\%basename%_ps_cat.txt
 powershell -Command "Get-Content %inpath% -Tail %num%" > %outpath%
 rem Check
-rem fc %inpath% %outpath%
+fc %outdir%\%basename%_gnuwin32.txt %outpath% > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.txt %outpath%)
 
-@echo off
 rem 後処理
-start %winmerge% %outdir%\%basename%_ps3.txt %outdir%\%basename%_ps2.txt
+echo off
 
 
 
