@@ -1,0 +1,4 @@
+<=,102,10,GroupC,b,"Diff",変更,変更
+=>,102,10,GroupC,b,"Diff",変更,変更後
+<=,104,10,GroupC,d,"Diff",削除,削除前
+=>,105,10,GroupC,e,"Diff",追加,追加後

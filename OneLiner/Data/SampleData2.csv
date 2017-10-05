@@ -1,0 +1,11 @@
+Seq,Group1,Group2,Column1,Column2,Column3,Column4
+1,1,GroupA,a,"A",Ç†,ColumnA1
+2,1,GroupA,b,"B",Ç¢,ColumnA2
+3,1,GroupA,c,"C",Ç§,ColumnA3
+4,2,GroupB,d,"D",Ç¶,ColumnB1
+5,2,GroupB,e,"E",Ç®,ColumnB2
+6,2,GroupB,f,"F",Ç©,ColumnB3
+101,10,GroupC,a,"Diff",àÍív,ColumnA1
+102,10,GroupC,b,"Diff",ïœçX,ïœçXå„
+103,10,GroupC,c,"Diff",àÍív,ColumnA1
+105,10,GroupC,e,"Diff",í«â¡,í«â¡å„
