@@ -70,14 +70,14 @@ if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32_i
 rem PowerShell
 rem PowerShell ファイル名のみ
 set outpath=%outdir%\%basename%_ps_path.txt
-powershell -Command "ls -Recurse %indir% | %%{$_.FullName} | Out-File -Encoding Default %outpath%"
+powershell -Command "ls -Recurse %indir% | %%{$_.FullName}" > %outpath%
 rem Check
 fc %outdir%\%basename%_gnuwin32_path.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32_path.txt %outpath%)
 
 rem PowerShell 付加情報付き
 set outpath=%outdir%\%basename%_ps_info.txt
-powershell -Command "ls -Recurse %indir% | %%{$_.LastWriteTime.ToString('yyyy/MM/dd HH:mm:ss')+','+$_.Length+','+$_.Attributes+','+$_.FullName} | Out-File -Encoding Default %outpath%"
+powershell -Command "ls -Recurse %indir% | %%{$_.LastWriteTime.ToString('yyyy/MM/dd HH:mm:ss')+','+$_.Length+','+$_.Attributes+','+$_.FullName}" > %outpath%
 rem Check
 fc %outdir%\%basename%_gnuwin32_info.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32_info.txt %outpath%)

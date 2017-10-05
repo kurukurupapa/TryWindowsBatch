@@ -32,12 +32,14 @@ set /a index=%num%-1
 rem echo on
 
 rem GnuWin32
+echo GnuWin32
 %gnubin%\wc -l %inpath%
 
 rem Windows標準コマンド for文1
 rem 空行は読み飛ばされる。
 rem 「setlocal enabledelayedexpansion」を指定している場合、「!」や「!」で括られた文字列が消える。
 rem 下記コマンドをコマンドラインから実行する場合、for文の変数の頭「%%」は「%」とする。
+echo Windows for文
 set i=0 & (for /f "delims= eol=" %%a in (%inpath%) do (set /a i=!i!+1)) & echo !i!
 
 rem Windows標準コマンド for文2
@@ -46,13 +48,17 @@ rem 下記コマンドをコマンドラインから実行する場合、for文の変数の頭「%%」は「%」と
 set i=0 & (for /f "tokens=1* delims=: eol=" %%a in ('findstr /n "^" %inpath%') do (set /a i=!i!+1)) & echo !i!
 
 rem PowerShell
+echo PowerShell
 powershell -Command "$(Get-Content %inpath%).Length"
+powershell -Command "$i=0; cat %inpath% | %%{ $i++ }; $i"
 
 rem Perl
+echo Perl
 perl -ne "BEGIN{$count=0}; $count+=1; END{print \"$count\n\"}" %inpath%
 perl -nE "END{print \"$.\n\"}" %inpath%
 
 rem Ruby
+echo Ruby
 ruby -ne "BEGIN{count=0}; count+=1; END{puts count}" %inpath%
 
 @echo off

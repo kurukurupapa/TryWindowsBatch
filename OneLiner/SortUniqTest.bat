@@ -53,7 +53,7 @@ if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %ou
 rem PowerShell
 rem エイリアス cat -> Get-Content, sort -> Sort-Object
 set outpath=%outdir%\%basename%_ps.txt
-powershell -Command "cat %inpath% | sort | Get-Unique | Out-File -Encoding Default %outpath%"
+powershell -Command "cat %inpath% | sort | Get-Unique" > %outpath%
 rem Check
 fc %outdir%\%basename%_ok.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok.txt %outpath%)

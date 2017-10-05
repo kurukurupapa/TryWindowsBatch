@@ -47,7 +47,7 @@ if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.t
 
 rem PowerShell
 set outpath=%outdir%\%basename%_ps.txt
-powershell -Command "cat %inpath% | %%{ $arr=$_.Split(','); $arr[0]+','+$arr[1]+','+$arr[3] } | Out-File -Encoding Default %outpath%"
+powershell -Command "cat %inpath% | %%{ $arr=$_.Split(','); $arr[0]+','+$arr[1]+','+$arr[3] }" > %outpath%
 rem Check
 fc %outdir%\%basename%_gnuwin32.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.txt %outpath%)

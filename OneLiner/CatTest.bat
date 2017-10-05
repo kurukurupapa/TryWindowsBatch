@@ -96,7 +96,7 @@ if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)
 rem PowerShell
 rem エイリアス cat -> Get-Content
 set outpath=%outdir%\%basename%_ps.txt
-powershell -Command "cat %inpath% | Out-File -Encoding Default %outpath%"
+powershell -Command "cat %inpath%" > %outpath%
 rem Check
 fc %inpath% %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)

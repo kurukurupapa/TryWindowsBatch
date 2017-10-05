@@ -1,7 +1,11 @@
-Seq,Group1,Group2,Column,...
+Seq,Group1,Group2,Column1,Column2,Column3,Column4
 1,1,GroupA,a,"A",あ,ColumnA1
 2,1,GroupA,b,"B",い,ColumnA2
 3,1,GroupA,c,"C",う,ColumnA3
 4,2,GroupB,d,"D",え,ColumnB1
 5,2,GroupB,e,"E",お,ColumnB2
 6,2,GroupB,f,"F",か,ColumnB3
+101,10,GroupC,a,"Diff",一致,ColumnA1
+102,10,GroupC,b,"Diff",変更,変更前
+103,10,GroupC,c,"Diff",一致,ColumnA1
+104,10,GroupC,d,"Diff",削除,削除前
