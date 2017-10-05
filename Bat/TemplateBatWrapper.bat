@@ -3,6 +3,7 @@ rem Windowsバッチファイルを呼び出します。
 
 set basedir=%~dp0
 set basename=%~n0
+set batdir=%~dp0
 set batname=%~n0%~x0
 set mainname=%basename:BatWrapper=%
 set logpath=%CD%\%mainname%.log

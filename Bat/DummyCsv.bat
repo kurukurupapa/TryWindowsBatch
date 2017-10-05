@@ -30,7 +30,8 @@ set char50=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 for /L %%i in (1,1,%numline%) do (
   set /a number=!RANDOM!
   rem set /a number=!RANDOM!*10000/32768
-  echo %%i,0123456789,"abcde","ABCDE","日本語テキスト",!number!,%char50%
+  set /a group=!number:~0,2!
+  echo %%i,0123456789,"abcde","ABCDE","日本語テキスト",!group!,!number!,%char50%
   set /a tmp=%%i%%10000
   if !tmp!==0 (
     call :LOG %%i
