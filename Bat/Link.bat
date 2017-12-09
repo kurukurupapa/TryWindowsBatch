@@ -29,7 +29,6 @@ set link_path=%~1
 set target_path=%~2
 set link_short_path=%~s1
 set target_short_path=%~s2
-echo %link_short_path%
 
 :MAIN
 call :LOG 処理開始します。
@@ -81,8 +80,8 @@ if exist "%target_path%\" (
 rem 実行するとUACの確認ダイアログが表示される。
 rem その後、コマンドプロンプトウインドウが表示され、コマンド実行後すぐに閉じられる。
 rem コマンド実行でエラーが発生しても見逃してしまうので、必要なら"/c"→"/k"に変更して、ウインドウを閉じないようにする。
-echo powershell.exe -Command Start-Process -FilePath "cmd" -ArgumentList "/k",%list% -Verb runas
-powershell.exe -Command Start-Process -FilePath "cmd" -ArgumentList "/k",%list% -Verb runas
+powershell.exe -Command Start-Process -FilePath "cmd" -ArgumentList "/c",%list% -Verb runas
+dir "%link_path%"
 
 
 
