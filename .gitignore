@@ -1,3 +1,10 @@
-/Result
+# 無視する拡張子
+*.log
 
+# 無視するフォルダ名
+tmp/
+work/
+
+# 無視するフォルダ/ファイル
 /Expect/SedTest_UTF-8_LF.txt.sjis
+/Result
