@@ -1,4 +1,5 @@
 # Perlスクリプトのテンプレートです。
+# ファイル・ディレクトリ操作、テキストファイル読み書きサンプル付き。
 
 use strict;
 use warnings;
@@ -16,10 +17,13 @@ our $timestampstr;
 init();
 
 # 引数チェック
-if ($#ARGV < 0 || $ARGV[0] eq "-h") {
-  print "Usage: perl $scriptname [-h] arg1 ...\n";
+if ($#ARGV + 1 < 2 || $ARGV[0] eq "-h") {
+  print "Usage: perl $scriptname [-h] inpath outpath\n";
+  print "inpath - 入力ファイルパス。\n";
+  print "outpath - 出力ファイルパス。\n";
   exit(1);
 }
+our ($inpath, $outpath) = @ARGV;
 
 # 主処理
 printlog("START");
@@ -29,43 +33,15 @@ printlog("scriptdir=$scriptdir");
 printlog("currentdir=$currentdir");
 printlog("timestampstr=$timestampstr");
 
-# ▼▼▼ここに処理を書きます
-
-# 制御構文
-my $state = 3;
-if ($state == 1) {
-  print "if文 処理1\n";
-} elsif ($state == 2) {
-  print "if文 処理2\n";
-} else {
-  print "if文 処理3\n";
+open(IN, "< $inpath") || die "Can't open $inpath.\n";
+open(OUT, "> $outpath") || die "Can't open $outpath.\n";
+my $count = 0;
+while (<IN>) {
+  $count++;
+  print OUT "$count: $_";
 }
-
-for (my $i = 0; $i < 3; $i++) {
-  print "for文 $i\n";
-}
-
-my @arr = ('a', 'b', 'c');
-foreach my $e (@arr) {
-  print "foreach文 $e\n";
-}
-
-my $flag = 1;
-while ($flag) {
-  print "while文 $flag\n";
-  $flag = 0;
-}
-
-# 文字列操作
-$_ = "abc,123,456";
-my $str = $_;
-print "length " . length($_) . "\n"; #length(expr)
-print "substr " . substr($_, 1, 2) . "\n"; #substr(expr, offset, length)
-@arr = split(/,/, $_); print "split $arr[0]\n"; #split(/pattern/, expr)
-$str =~ s/,(.*),/$1/g; print "置換 $str\n"; #s/pattern/replacement/gieo
-if ($_ =~ /,(.*),/) { print "マッチング $1\n"; }
-
-# ▲▲▲ここに処理を書きます
+close OUT;
+close IN;
 
 # 後処理
 printlog("END");
