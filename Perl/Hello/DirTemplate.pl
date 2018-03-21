@@ -7,13 +7,13 @@ use Cwd;
 use File::Basename;
 
 # 前処理
-our $basename;
-our $scriptname;
-our $scriptdir;
-our $currentdir;
-our $datestr;
-our $timestr;
-our $timestampstr;
+my $basename;
+my $scriptname;
+my $scriptdir;
+my $currentdir;
+my $datestr;
+my $timestr;
+my $timestampstr;
 init();
 
 # 引数チェック
@@ -31,9 +31,9 @@ printlog("scriptdir=$scriptdir");
 printlog("currentdir=$currentdir");
 printlog("timestampstr=$timestampstr");
 
-our $dircount = 0;
-our $filecount = 0;
-our $unknowncount = 0;
+my $dircount = 0;
+my $filecount = 0;
+my $unknowncount = 0;
 foreach my $path (@ARGV) {
   proc($path);
 }

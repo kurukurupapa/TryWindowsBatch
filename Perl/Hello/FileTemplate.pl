@@ -7,13 +7,13 @@ use Cwd;
 use File::Basename;
 
 # 前処理
-our $basename;
-our $scriptname;
-our $scriptdir;
-our $currentdir;
-our $datestr;
-our $timestr;
-our $timestampstr;
+my $basename;
+my $scriptname;
+my $scriptdir;
+my $currentdir;
+my $datestr;
+my $timestr;
+my $timestampstr;
 init();
 
 # 引数チェック
@@ -23,7 +23,7 @@ if ($#ARGV + 1 < 2 || $ARGV[0] eq "-h") {
   print "outpath - 出力ファイルパス。\n";
   exit(1);
 }
-our ($inpath, $outpath) = @ARGV;
+my ($inpath, $outpath) = @ARGV;
 
 # 主処理
 printlog("START");

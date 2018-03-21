@@ -6,13 +6,13 @@ use Cwd;
 use File::Basename;
 
 # 前処理
-our $basename;
-our $scriptname;
-our $scriptdir;
-our $currentdir;
-our $datestr;
-our $timestr;
-our $timestampstr;
+my $basename;
+my $scriptname;
+my $scriptdir;
+my $currentdir;
+my $datestr;
+my $timestr;
+my $timestampstr;
 init();
 
 # 引数チェック
