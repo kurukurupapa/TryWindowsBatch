@@ -1,0 +1,13 @@
+if文 処理3
+for文 0
+for文 1
+for文 2
+foreach文 a
+foreach文 b
+foreach文 c
+while文 1
+length 11
+substr bc
+split abc
+置換 abc123456
+マッチング 123

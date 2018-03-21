@@ -1,0 +1,3 @@
+Usage: perl FileTemplate.pl [-h] inpath outpath
+inpath - 入力ファイルパス。
+outpath - 出力ファイルパス。
