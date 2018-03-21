@@ -1,5 +1,5 @@
 # Perlスクリプトのテンプレートです。
-# ファイル・ディレクトリ操作、テキストファイル読み書きサンプル付き。
+# テキストファイル読み書きサンプル付き。
 
 use strict;
 use warnings;
@@ -35,11 +35,16 @@ printlog("timestampstr=$timestampstr");
 
 open(IN, "< $inpath") || die "Can't open $inpath.\n";
 open(OUT, "> $outpath") || die "Can't open $outpath.\n";
+
+# 改行コードを制御したいときはバイナリモードにする。
+binmode(OUT);
+
 my $count = 0;
 while (<IN>) {
   $count++;
   print OUT "$count: $_";
 }
+
 close OUT;
 close IN;
 
