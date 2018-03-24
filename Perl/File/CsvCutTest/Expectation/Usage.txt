@@ -1,0 +1,7 @@
+Usage: perl csvcut.pl [OPTIONS] [--column col1,col2,...] [inpath]
+--help, -h          - 当ヘルプを表示する。
+--debug             - デバッグ用
+--column, -c col1,col2,... - 抽出するカラム番号。1始まり。
+--delimiter delim   - 入力ファイルの区切り文字。デフォルト：カンマ（,）。
+--out, -o outpath   - 出力ファイルパス。デフォルト：標準出力。
+inpath              - 入力ファイルパス。デフォルト：標準入力。

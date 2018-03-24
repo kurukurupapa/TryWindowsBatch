@@ -1,0 +1,8 @@
+Usage: perl csvgrep.pl [OPTIONS] [--rowstring col=str][--rowfile col=path] [inpath]
+--help, -h          - 当ヘルプを表示する。
+--debug             - デバッグ用
+--rowstring col=str - カラムcolが文字列strに一致する行を抽出する。colは1始まり。
+--rowfile col=path  - カラムcolがファイルpath内のいずれかの文字列に一致する行を抽出する。colは1始まり。
+--delimiter delim   - 入力ファイルの区切り文字。デフォルト：カンマ（,）。
+--out, -o outpath   - 出力ファイルパス。デフォルト：標準出力。
+inpath              - 入力ファイルパス。デフォルト：標準入力。
