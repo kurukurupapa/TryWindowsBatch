@@ -1,3 +1,7 @@
-Usage: perl FileTemplate.pl [-h] inpath outpath
-inpath - 入力ファイルパス。
-outpath - 出力ファイルパス。
+Usage: perl filetemplate.pl [OPTIONS] inpath outpath
+--string str   - 文字列引数
+--integer int  - 整数引数
+--help, -h     - 当ヘルプを表示する。
+--debug        - デバッグ用
+inpath         - 入力ファイルパス。
+outpath        - 出力ファイルパス。

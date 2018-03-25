@@ -25,25 +25,16 @@ call :LOG 処理開始します。
 
 
 rem 準備
-set mainname=%basename:Test=%
+set mainname=csvgrep
 set mainpath=%basedir%\..\%mainname%.pl
-set inpdir=%basedir%\Input
+set indir=%basedir%\Input
 set expdir=%basedir%\Expectation
-set workdir=%basedir%\work
-set tmppath=%workdir%\%basename%.log
-mkdir %workdir%
+set workdir=%basedir%\Work
+if not exist %workdir% ( mkdir %workdir% )
 
-rem テスト
-perl %mainpath% > %tmppath%
-fc %expdir%\Usage.txt %tmppath%
-if errorlevel 1 ( goto :ERROR )
-
-perl %mainpath% -h > %tmppath%
-fc %expdir%\Usage.txt %tmppath%
-if errorlevel 1 ( goto :ERROR )
-
-perl %mainpath% %inpdir%\Normal.txt %tmppath%
-fc %expdir%\Normal.txt %tmppath%
+echo TEST ヘルプ
+perl %mainpath% -h > %workdir%\Usage.txt
+fc %expdir%\Usage.txt %workdir%\Usage.txt > nul
 if errorlevel 1 ( goto :ERROR )
 
 rem 後処理

@@ -25,27 +25,21 @@ call :LOG 処理開始します。
 
 
 rem 準備
-set mainname=%basename:Test=%
+set mainname=template
 set mainpath=%basedir%\..\%mainname%.pl
 set inpdir=%basedir%\Input
 set expdir=%basedir%\Expectation
-set workdir=%basedir%\work
-set tmppath=%workdir%\%basename%.log
+set workdir=%basedir%\Work
 if not exist %workdir% ( mkdir %workdir% )
 
-rem テスト
-perl %mainpath% > %tmppath%
-fc %expdir%\Usage.txt %tmppath%
+echo TEST 正常系
+perl %mainpath% arg1 > %workdir%\Normal.txt
+fc %expdir%\Normal.txt %workdir%\Normal.txt > nul
 if errorlevel 1 ( goto :ERROR )
 
-perl %mainpath% -h > %tmppath%
-fc %expdir%\Usage.txt %tmppath%
-if errorlevel 1 ( goto :ERROR )
-
-pushd %inpdir%
-perl %mainpath% . > %tmppath%
-popd
-fc %expdir%\Normal.txt %tmppath%
+echo TEST 正常系（日本語引数）
+perl %mainpath% 日本語 > %workdir%\NormalJa.txt
+fc %expdir%\Normal.txt %workdir%\NormalJa.txt > nul
 if errorlevel 1 ( goto :ERROR )
 
 rem 後処理

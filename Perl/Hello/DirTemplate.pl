@@ -1,12 +1,20 @@
-# PerlƒXƒNƒŠƒvƒg‚Ìƒeƒ“ƒvƒŒ[ƒg‚Å‚·B
-# ƒtƒ@ƒCƒ‹EƒfƒBƒŒƒNƒgƒŠ‘€ìƒTƒ“ƒvƒ‹•t‚«B
+# Perlã§ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ“ä½œã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã§ã™ã€‚
+# Windowsç’°å¢ƒã§å‹•ä½œã•ã›ã‚‹ã“ã¨ã‚’å‰æã«ã—ã¦ã„ã¾ã™ã€‚
+# ãƒ¢ãƒ€ãƒ³Perlã¯UTF8ã§ä½œæˆã™ã‚‹ã‚‰ã—ã„ã®ã§ã€ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’UTF8ã«ã—ã¦ã€æ¨™æº–å…¥å‡ºåŠ›ã‚’ã‚·ãƒ•ãƒˆJISã«ã—ã¦ã„ã¾ã™ã€‚
 
 use strict;
 use warnings;
+use utf8;
 use Cwd;
+use Data::Dumper;
+use Encode;
 use File::Basename;
+use Getopt::Long;
+binmode STDIN, ':encoding(cp932)';
+binmode STDOUT, ':encoding(cp932)';
+binmode STDERR, ':encoding(cp932)';
 
-# ‘Oˆ—
+# å‰å‡¦ç†
 my $basename;
 my $scriptname;
 my $scriptdir;
@@ -16,20 +24,25 @@ my $timestr;
 my $timestampstr;
 init();
 
-# ˆø”ƒ`ƒFƒbƒN
-if ($#ARGV < 0 || $ARGV[0] eq "-h") {
-  print "Usage: perl $scriptname [-h] path1 ...\n";
-  print "path - ƒtƒ@ƒCƒ‹A‚Ü‚½‚ÍƒfƒBƒŒƒNƒgƒŠ‚ÌƒpƒXB\n";
+# å®Ÿè¡Œæ™‚å¼•æ•°è§£æ
+my %opts = ();
+# GetOptionsã®å‹æŒ‡å®šï¼šs=æ–‡å­—åˆ—å‹, i=æ•´æ•°å‹, f=å®Ÿæ•°å‹, @=åŒoptionã‚’è¤‡æ•°å›æŒ‡å®šå¯, å‹ãªã—=boolean
+GetOptions(\%opts,
+  "help|h",
+  "debug"
+) or $opts{help} = 1;
+if ($#ARGV + 1 < 1 || $opts{help}) {
+  print "Usage: perl $scriptname [OPTIONS] path1 ...\n";
+  print "--help, -h     - å½“ãƒ˜ãƒ«ãƒ—ã‚’è¡¨ç¤ºã™ã‚‹ã€‚\n";
+  print "--debug        - ãƒ‡ãƒãƒƒã‚°ç”¨\n";
+  print "path           - ãƒ•ã‚¡ã‚¤ãƒ«ã€ã¾ãŸã¯ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ãƒ‘ã‚¹ã€‚\n";
   exit(1);
 }
 
-# åˆ—
+# ä¸»å‡¦ç†
 printlog("START");
-printlog("basename=$basename");
-printlog("scriptname=$scriptname");
-printlog("scriptdir=$scriptdir");
-printlog("currentdir=$currentdir");
-printlog("timestampstr=$timestampstr");
+printlog("\%opts " . Dumper(\%opts));
+printlog("\@ARGV " . Dumper(\@ARGV));
 
 my $dircount = 0;
 my $filecount = 0;
@@ -38,28 +51,30 @@ foreach my $path (@ARGV) {
   proc($path);
 }
 
-print "ƒfƒBƒŒƒNƒgƒŠ”: $dircount\n";
-print "ƒtƒ@ƒCƒ‹”:     $filecount\n";
-print "•s–¾”:         $unknowncount\n";
+print "ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ•°: $dircount\n";
+print "ãƒ•ã‚¡ã‚¤ãƒ«æ•°:     $filecount\n";
+print "ä¸æ˜æ•°:         $unknowncount\n";
 
-# Œãˆ—
+# å¾Œå‡¦ç†
 printlog("END");
 exit(0);
 
 # ----------------------------------------------------------------------
-# ŠÖ”’è‹`
+# é–¢æ•°å®šç¾©
 
 sub printlog {
-  my ($msg) = @_;
-  my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time());
-  my $timestamp = sprintf("%04d/%02d/%02d %02d:%02d:%02d", $year + 1900, $mon + 1, $mday, $hour, $min, $sec);
-  print STDERR "${timestamp} ${scriptname} ${msg}\n";
+  if ($opts{debug}) {
+    my ($msg) = @_;
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time());
+    my $timestamp = sprintf("%04d/%02d/%02d %02d:%02d:%02d", $year + 1900, $mon + 1, $mday, $hour, $min, $sec);
+    chomp($msg);
+    print STDERR "${timestamp} ${scriptname} ${msg}\n";
+  }
 }
 
 sub abort {
   my ($msg) = @_;
-  printlog $msg;
-  die("Abort!")
+  die("ERROR: $msg\n");
 }
 
 sub init {
@@ -72,7 +87,7 @@ sub init {
   $timestampstr = $datestr . "-" . $timestr;
 }
 
-# 1‚Â‚ÌƒfƒBƒŒƒNƒgƒŠ/ƒtƒ@ƒCƒ‹‚Ìˆ—
+# 1ã¤ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª/ãƒ•ã‚¡ã‚¤ãƒ«ã®å‡¦ç†
 sub proc {
   my ($path) = @_;
   if (-d $path) {
@@ -85,7 +100,7 @@ sub proc {
   }
 }
 
-# ƒfƒBƒŒƒNƒgƒŠÄ‹A
+# ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå†å¸°
 sub proc_nest {
   my ($dirpath) = @_;
 
@@ -103,7 +118,7 @@ sub proc_nest {
   }
 }
 
-# 1‚Â‚ÌƒfƒBƒŒƒNƒgƒŠ‚Ìˆ—
+# 1ã¤ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®å‡¦ç†
 sub proc_dir {
   my ($path) = @_;
   my ($dev, $ino, $mode, $nlink, $uid, $gid, $rdev, $size,
@@ -113,7 +128,7 @@ sub proc_dir {
   $dircount++;
 }
 
-# 1‚Â‚Ìƒtƒ@ƒCƒ‹‚Ìˆ—
+# 1ã¤ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®å‡¦ç†
 sub proc_file {
   my ($path) = @_;
   my ($dev, $ino, $mode, $nlink, $uid, $gid, $rdev, $size,
@@ -123,14 +138,14 @@ sub proc_file {
   $filecount++;
 }
 
-# 1‚Â‚Ì•s–¾ƒpƒX‚Ìˆ—
+# 1ã¤ã®ä¸æ˜ãƒ‘ã‚¹ã®å‡¦ç†
 sub proc_unknown {
   my ($path) = @_;
   print "$path Unknown\n";
   $unknowncount++;
 }
 
-# “ú•¶š—ñ‚Ì‘g‚İ—§‚Ä
+# æ—¥æ™‚æ–‡å­—åˆ—ã®çµ„ã¿ç«‹ã¦
 sub make_timestr {
   my ($time) = @_;
   my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime($time);

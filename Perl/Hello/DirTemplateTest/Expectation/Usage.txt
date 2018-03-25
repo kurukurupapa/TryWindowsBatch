@@ -1,2 +1,4 @@
-Usage: perl DirTemplate.pl [-h] path1 ...
-path - ファイル、またはディレクトリのパス。
+Usage: perl dirtemplate.pl [OPTIONS] path1 ...
+--help, -h     - 当ヘルプを表示する。
+--debug        - デバッグ用
+path           - ファイル、またはディレクトリのパス。

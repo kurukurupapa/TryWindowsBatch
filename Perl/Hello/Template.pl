@@ -1,11 +1,18 @@
-# PerlƒXƒNƒŠƒvƒg‚Ìƒeƒ“ƒvƒŒ[ƒg‚Å‚·B
+# Perlã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã§ã™ã€‚
+# Windowsç’°å¢ƒã§å‹•ä½œã•ã›ã‚‹ã“ã¨ã‚’å‰æã«ã—ã¦ã„ã¾ã™ã€‚
+# ãƒ¢ãƒ€ãƒ³Perlã¯UTF8ã§ä½œæˆã™ã‚‹ã‚‰ã—ã„ã®ã§ã€ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’UTF8ã«ã—ã¦ã€æ¨™æº–å…¥å‡ºåŠ›ã‚’ã‚·ãƒ•ãƒˆJISã«ã—ã¦ã„ã¾ã™ã€‚
 
 use strict;
 use warnings;
+use utf8;
 use Cwd;
+use Encode;
 use File::Basename;
+binmode STDIN, ':encoding(cp932)';
+binmode STDOUT, ':encoding(cp932)';
+binmode STDERR, ':encoding(cp932)';
 
-# ‘Oˆ—
+# å‰å‡¦ç†
 my $basename;
 my $scriptname;
 my $scriptdir;
@@ -15,64 +22,67 @@ my $timestr;
 my $timestampstr;
 init();
 
-# ˆø”ƒ`ƒFƒbƒN
-if ($#ARGV < 0 || $ARGV[0] eq "-h") {
-  print "Usage: perl $scriptname [-h] arg1 ...\n";
+# å®Ÿè¡Œæ™‚å¼•æ•°è§£æ
+if ($#ARGV + 1 != 1 || $ARGV[0] eq '-h') {
+  print "Usage: perl $scriptname [-h] arg1\n";
   exit(1);
 }
+my ($arg1) = @ARGV;
+$arg1 = decode('cp932', $arg1);
 
-# åˆ—
+# ä¸»å‡¦ç†
 printlog("START");
 printlog("basename=$basename");
 printlog("scriptname=$scriptname");
 printlog("scriptdir=$scriptdir");
 printlog("currentdir=$currentdir");
 printlog("timestampstr=$timestampstr");
+printlog("\$arg1=$arg1");
 
-# ¥¥¥‚±‚±‚Éˆ—‚ğ‘‚«‚Ü‚·
+# â–¼â–¼â–¼ã“ã“ã«å‡¦ç†ã‚’æ›¸ãã¾ã™
 
-# §Œä\•¶
+# åˆ¶å¾¡æ§‹æ–‡
 my $state = 3;
 if ($state == 1) {
-  print "if•¶ ˆ—1\n";
+  print "ifæ–‡ å‡¦ç†1\n";
 } elsif ($state == 2) {
-  print "if•¶ ˆ—2\n";
+  print "ifæ–‡ å‡¦ç†2\n";
 } else {
-  print "if•¶ ˆ—3\n";
+  print "ifæ–‡ å‡¦ç†3\n";
 }
 
 for (my $i = 0; $i < 3; $i++) {
-  print "for•¶ $i\n";
+  print "foræ–‡ $i\n";
 }
 
 my @arr = ('a', 'b', 'c');
 foreach my $e (@arr) {
-  print "foreach•¶ $e\n";
+  print "foreachæ–‡ $e\n";
 }
 
 my $flag = 1;
 while ($flag) {
-  print "while•¶ $flag\n";
+  print "whileæ–‡ $flag\n";
   $flag = 0;
 }
 
-# •¶š—ñ‘€ì
+# æ–‡å­—åˆ—æ“ä½œ
 $_ = "abc,123,456";
 my $str = $_;
 print "length " . length($_) . "\n"; #length(expr)
 print "substr " . substr($_, 1, 2) . "\n"; #substr(expr, offset, length)
 @arr = split(/,/, $_); print "split $arr[0]\n"; #split(/pattern/, expr)
-$str =~ s/,(.*),/$1/g; print "’uŠ· $str\n"; #s/pattern/replacement/gieo
-if ($_ =~ /,(.*),/) { print "ƒ}ƒbƒ`ƒ“ƒO $1\n"; }
+$str =~ s/,(.*),/$1/g; print "ç½®æ› $str\n"; #s/pattern/replacement/gieo
+if ($_ =~ /,(.*),/) { print "ãƒãƒƒãƒãƒ³ã‚° $1\n"; }
 
-# £££‚±‚±‚Éˆ—‚ğ‘‚«‚Ü‚·
+# â–²â–²â–²ã“ã“ã«å‡¦ç†ã‚’æ›¸ãã¾ã™
 
-# Œãˆ—
+# å¾Œå‡¦ç†
 printlog("END");
 exit(0);
 
 # ----------------------------------------------------------------------
-# ŠÖ”’è‹`
+# é–¢æ•°å®šç¾©
 
 sub printlog {
   my ($msg) = @_;
@@ -83,8 +93,7 @@ sub printlog {
 
 sub abort {
   my ($msg) = @_;
-  printlog $msg;
-  die("Abort!")
+  die("ERROR: $msg\n");
 }
 
 sub init {

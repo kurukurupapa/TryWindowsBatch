@@ -1,6 +1,6 @@
 # CSVファイルから行を抽出します。
-# モダンPerlはUTF8で作成するらしい。一方、WindowsはシフトJISなので、
-# スクリプトをUTF8にして、標準入出力をシフトJISにする。
+# Windows環境で動作させることを前提にしています。
+# モダンPerlはUTF8で作成するらしいので、スクリプトをUTF8にして、標準入出力をシフトJISにしています。
 
 use strict;
 use warnings;
@@ -28,14 +28,14 @@ init();
 my %opts = ();
 $opts{delimiter} = ",";
 my $inpath = "";
-# 型指定：s=文字列型, i=整数型, f=実数型, @=同optionを複数回指定可, 型なし=boolean
+# GetOptionsの型指定：s=文字列型, i=整数型, f=実数型, @=同optionを複数回指定可, 型なし=boolean
 GetOptions(\%opts,
-  "help|h",
-  "debug",
   "rowstring=s",
   "rowfile=s",
   "delimiter=s",
-  "out=s"
+  "out=s",
+  "help|h",
+  "debug"
 ) or $opts{help} = 1;
 if ($#ARGV + 1 < 0 || $#ARGV + 1 > 1 || $opts{help}) {
   print "Usage: perl $scriptname [OPTIONS] [--rowstring col=str][--rowfile col=path] [inpath]\n";
@@ -162,7 +162,7 @@ sub abort {
 
 sub init {
   $basename = basename($0, '.pl');
-  ($scriptname, $scriptdir) = fileparse(__FILE__);
+  ($scriptname, $scriptdir) = fileparse($0);
   $currentdir = Cwd::getcwd();
   my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time());
   $datestr = sprintf("%04d%02d%02d", $year + 1900, $mon + 1, $mday);

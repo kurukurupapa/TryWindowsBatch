@@ -1,12 +1,13 @@
 # CSVファイルからカラムを抽出します。
-# モダンPerlはUTF8で作成するらしい。一方、WindowsはシフトJISなので、
-# スクリプトをUTF8にして、標準入出力をシフトJISにする。
+# Windows環境で動作させることを前提にしています。
+# モダンPerlはUTF8で作成するらしいので、スクリプトをUTF8にして、標準入出力をシフトJISにしています。
 
 use strict;
 use warnings;
 use utf8;
 use Cwd;
 use Data::Dumper;
+use Encode;
 use File::Basename;
 use Getopt::Long;
 binmode STDIN, ':encoding(cp932)';
@@ -27,14 +28,13 @@ init();
 my %opts = ();
 $opts{delimiter} = ",";
 $opts{column} = "";
-my $inpath = "";
-# 型指定：s=文字列型, i=整数型, f=実数型, @=同optionを複数回指定可, 型なし=boolean
+# GetOptionsの型指定：s=文字列型, i=整数型, f=実数型, @=同optionを複数回指定可, 型なし=boolean
 GetOptions(\%opts,
-  "help|h",
-  "debug",
   "column=s",
   "delimiter=s",
-  "out=s"
+  "out=s",
+  "help|h",
+  "debug"
 ) or $opts{help} = 1;
 if ($#ARGV + 1 < 0 || $#ARGV + 1 > 1 || $opts{help}) {
   print "Usage: perl $scriptname [OPTIONS] [--column col1,col2,...] [inpath]\n";
@@ -47,6 +47,7 @@ if ($#ARGV + 1 < 0 || $#ARGV + 1 > 1 || $opts{help}) {
   exit(1);
 }
 my @optcolumns = split(/,/, $opts{column});
+my $inpath = "";
 if ($#ARGV + 1 >= 1) {
   ($inpath) = @ARGV;
 }
