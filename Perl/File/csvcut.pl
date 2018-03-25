@@ -36,7 +36,7 @@ GetOptions(\%opts,
   "help|h",
   "debug"
 ) or $opts{help} = 1;
-if ($#ARGV + 1 < 0 || $#ARGV + 1 > 1 || $opts{help}) {
+if ($#ARGV + 1 < 0 || 1 < $#ARGV + 1 || $opts{help}) {
   print "Usage: perl $scriptname [OPTIONS] [--column col1,col2,...] [inpath]\n";
   print "--help, -h          - 当ヘルプを表示する。\n";
   print "--debug             - デバッグ用\n";

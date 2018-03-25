@@ -41,6 +41,25 @@ printlog("\$arg1=$arg1");
 
 # ▼▼▼ここに処理を書きます
 
+# 配列
+my @arr = ('a', 'b', 'c');
+push(@arr, '1');
+@arr = sort(@arr);
+foreach my $e (@arr) {
+  print "配列操作 $e\n";
+}
+
+# 連想配列
+my %hash = ();
+$hash{key1} = 'value1';
+$hash{key2} = 'value2';
+while (my ($k, $v) = each(%hash)) {
+  print "連想配列操作 $k=$v\n";
+}
+foreach my $k (keys(%hash)) {
+  print "連想配列操作 $k\n";
+}
+
 # 制御構文
 my $state = 3;
 if ($state == 1) {
@@ -55,8 +74,7 @@ for (my $i = 0; $i < 3; $i++) {
   print "for文 $i\n";
 }
 
-my @arr = ('a', 'b', 'c');
-foreach my $e (@arr) {
+foreach my $e ('a', 'b', 'c') {
   print "foreach文 $e\n";
 }
 

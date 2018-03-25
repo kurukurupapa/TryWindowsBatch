@@ -1,0 +1,7 @@
+Usage: perl csvjoin.pl [OPTIONS] inpath1 inpath2
+--help, -h          - 当ヘルプを表示する。
+--debug             - デバッグ用
+--file1key col1,col2,... - ファイル1のキーカラム番号。1始まり。
+--file2key col1,col2,... - 上記同様。ファイル1のキーと結合する。
+--out, -o outpath   - 出力ファイルパス。デフォルト：標準出力。
+inpath              - 入力ファイルパス。
