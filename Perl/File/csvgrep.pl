@@ -26,57 +26,58 @@ init();
 
 # 実行時引数解析
 my %opts = ();
+$opts{column} = 1;
 $opts{delimiter} = ",";
-my $inpath = "";
 # GetOptionsの型指定：s=文字列型, i=整数型, f=実数型, @=同optionを複数回指定可, 型なし=boolean
 GetOptions(\%opts,
-  "rowstring=s",
-  "rowfile=s",
+  "column=i",
+  "string=s",
+  "file=s",
   "delimiter=s",
   "out=s",
   "help|h",
   "debug"
 ) or $opts{help} = 1;
 if ($#ARGV + 1 < 0 || 1 < $#ARGV + 1 || $opts{help}) {
-  print "Usage: perl $scriptname [OPTIONS] [--rowstring col=str][--rowfile col=path] [inpath]\n";
+  print "Usage: perl $scriptname [OPTIONS] --column col --string str1,str2,... [inpath]\n";
+  print "       perl $scriptname [OPTIONS] --column col --file path [inpath]\n";
   print "--help, -h          - 当ヘルプを表示する。\n";
   print "--debug             - デバッグ用\n";
-  print "--rowstring col=str - カラムcolが文字列strに一致する行を抽出する。colは1始まり。\n";
-  print "--rowfile col=path  - カラムcolがファイルpath内のいずれかの文字列に一致する行を抽出する。colは1始まり。\n";
+  print "--column col        - カラムcolを対象に条件判定する。colは1始まり。\n";
+  print "--string str1,str2,...\n";
+  print "                    - 文字列strのいずれかに一致する行を抽出する。\n";
+  print "--file path         - ファイルpath内のいずれかの文字列に一致する行を抽出する。\n";
   print "--delimiter delim   - 入力ファイルの区切り文字。デフォルト：カンマ（,）。\n";
   print "--out, -o outpath   - 出力ファイルパス。デフォルト：標準出力。\n";
   print "inpath              - 入力ファイルパス。デフォルト：標準入力。\n";
   exit(1);
 }
-# rowstringオプション事前準備
-my %rshash = ();
-if ($opts{rowstring}) {
-  my @arr = split(/,/, decode('cp932', $opts{rowstring}));
+# stringオプション準備
+my %stringhash = ();
+if ($opts{string}) {
+  my @arr = split(/,/, decode('cp932', $opts{string}));
   foreach my $e (@arr) {
-    my ($column, $value) = split(/=/, $e);
-    $rshash{$column} = $value;
+    $stringhash{$e} = 1;
   }
 }
-# rowfileオプション事前準備
-my $rfcolumn = "";
-my @rfvalues = ();
-if ($opts{rowfile}) {
-  my ($column, $path) = split(/=/, $opts{rowfile});
-  $rfcolumn = $column;
-  @rfvalues = read_file($path);
+# fileオプション準備
+my %filehash = ();
+if ($opts{file}) {
+  %filehash = read_file($opts{file});
 }
 # その他オプション
+my $inpath = "";
 if ($#ARGV + 1 >= 1) {
   ($inpath) = @ARGV;
 }
 
 # 主処理
 printlog("START");
-printlog("\%opts " . Dumper(\%opts));
+printlog("opts " . Dumper(\%opts));
 # printlog("\@ARGV " . Dumper(\@ARGV));
-printlog("\%rshash " . Dumper(\%rshash));
-printlog("\$rfcolumn " . Dumper($rfcolumn));
-printlog("\@rfvalues " . Dumper(\@rfvalues));
+printlog("stringhash " . Dumper(\%stringhash));
+printlog("filehash " . Dumper(\%filehash));
+printlog("inpath=$inpath");
 
 # ファイルオープン
 if ($inpath) {
@@ -97,33 +98,22 @@ while (<STDIN>) {
   my @columns = split(/$opts{delimiter}/, $line);
 
   # 行の抽出
-  my $flag = 1;
-  # rowstringオプション処理
-  if (%rshash) {
-    foreach my $k (keys(%rshash)) {
-      if ($k < 1 || $#columns + 1 < $k) {
-        die("ERROR: line=$count, \$#columns=$#columns, rowstring option column=$k\n");
-      }
-      my $v = $rshash{$k};
-      if ($columns[$k - 1] ne $v) {
-        $flag = 0;
-        last;
-      }
-    }
+  if ($opts{column} < 1 || $#columns + 1 < $opts{column}) {
+    die("ERROR: line=$count, num columns=" . ($#columns + 1) . ", key column=$opts{column}\n");
   }
-  # rowfileオプション処理
-  if ($flag && $rfcolumn) {
-    if ($rfcolumn < 1 || $#columns + 1 < $rfcolumn) {
-      die("ERROR: line=$count, \$#columns=$#columns, rowfile option column=$rfcolumn\n");
-    }
-    my $invalue = $columns[$rfcolumn - 1];
-    $flag = 0;
-    foreach my $e (@rfvalues) {
-      if ($invalue eq $e) {
-        $flag = 1;
-        last;
-      }
-    }
+  my $key = $columns[$opts{column} - 1];
+  my $flag = 0;
+  # stringオプション処理
+  if (%stringhash) {
+    $flag = defined($stringhash{$key});
+  }
+  # fileオプション処理
+  if ((not $flag) && %filehash) {
+    $flag = defined($filehash{$key});
+  }
+  # オプションなし時動作
+  if (!$opts{string} && !$opts{file}) {
+    $flag = 1;
   }
 
   # 行の出力
@@ -172,12 +162,12 @@ sub init {
 
 sub read_file {
   my ($path) = @_;
-  my @arr = ();
-  open(IN, '<', $path) or die("ERROR: Can't open $path. $!\n");
+  my %hash = ();
+  open(IN, '<:encoding(cp932)', $path) or die("ERROR: Can't open $path. $!\n");
   while (<IN>) {
     chomp($_);
-    push(@arr, $_);
+    $hash{$_} = 1;
   }
   close(IN);
-  return @arr;
+  return %hash;
 }

@@ -25,35 +25,30 @@ call :LOG 処理開始します。
 
 
 rem 準備
-rem set mainname=%basename:Test=%
-set mainname=csvgrep
-set mainpath=%basedir%\..\%mainname%.pl
-set indir=%basedir%\Input
-set expdir=%basedir%\Expectation
-set workdir=%basedir%\Work
-set tmppath=%workdir%\%basename%.log
-if not exist %workdir% ( mkdir %workdir% )
+call %batdir%\Setting.bat
 
-echo TEST rowstringで行抽出（ASCII文字）
-perl %mainpath% --rowstring 1=b %indir%\Normal.csv > %workdir%\RowString_Ascii_Result.csv
-%gnubin%\grep -E "^b," %indir%\Normal.csv > %workdir%\RowString_Ascii_Expectation.csv
-fc %workdir%\RowString_Ascii_Expectation.csv %workdir%\RowString_Ascii_Result.csv > nul
+echo TEST stringで行抽出（ASCII文字）
+perl %mainpath% --string b %indir%\Normal.csv > %workdir%\String_Ascii_Result.csv
+findstr "^b," %indir%\Normal.csv > %workdir%\String_Ascii_Expectation.csv
+call :check %workdir%\String_Ascii_Expectation.csv %workdir%\String_Ascii_Result.csv
 if errorlevel 1 ( goto :ERROR )
 
-echo TEST rowstringで行抽出（日本語）
-perl %mainpath% --rowstring 5=さしすせそ %indir%\Normal.csv > %workdir%\RowString_Ja_Result.csv
-%gnubin%\grep さしすせそ %indir%\Normal.csv > %workdir%\RowString_Ja_Expectation.csv
-fc %workdir%\RowString_Ja_Expectation.csv %workdir%\RowString_Ja_Result.csv > nul
+echo TEST stringで行抽出（日本語）
+perl %mainpath% --column 5 --string さしすせそ %indir%\Normal.csv > %workdir%\String_Ja_Result.csv
+findstr さしすせそ %indir%\Normal.csv > %workdir%\String_Ja_Expectation.csv
+call :check %workdir%\String_Ja_Expectation.csv %workdir%\String_Ja_Result.csv
 if errorlevel 1 ( goto :ERROR )
 
-echo TEST rowstringで行抽出（対象なし）
-perl %mainpath% --rowstring 1=xxx %indir%\Normal.csv > %workdir%\RowString_Zero_Result.csv
-%gnubin%\grep xxx %indir%\Normal.csv > %workdir%\RowString_Zero_Expectation.csv
-fc %workdir%\RowString_Zero_Expectation.csv %workdir%\RowString_Zero_Result.csv > nul
+echo TEST stringで行抽出（対象なし）
+perl %mainpath% --string xxx %indir%\Normal.csv > %workdir%\String_Zero_Result.csv
+type nul > %workdir%\String_Zero_Expectation.csv
+call :check %workdir%\String_Zero_Expectation.csv %workdir%\String_Zero_Result.csv
 if errorlevel 1 ( goto :ERROR )
 
-echo TEST rowstringで存在しないカラム
-perl %mainpath% --rowstring 0=xxx,1=b,999=xxx %indir%\Normal.csv > %workdir%\RowString_NoColumn_Result.csv
+echo TEST stringで存在しないカラム
+perl %mainpath% --column 0 --string b %indir%\Normal.csv > %workdir%\String_NoColumn_Result.csv
+if %errorlevel% equ 0 ( goto :ERROR )
+perl %mainpath% --column 6 --string b %indir%\Normal.csv > %workdir%\String_NoColumn_Result.csv
 if %errorlevel% equ 0 ( goto :ERROR )
 
 rem 後処理
@@ -72,5 +67,13 @@ exit /b 1
 :LOG
 echo %DATE% %TIME% %basename% %1 1>&2
 exit /b 0
+
+:check
+fc %1 %2 > %tmplog%
+set result=%errorlevel%
+if %result% neq 0 (
+  type %tmplog%
+)
+exit /b %result%
 
 :EOF

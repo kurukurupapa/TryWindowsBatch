@@ -25,36 +25,28 @@ call :LOG 処理開始します。
 
 
 rem 準備
-rem set mainname=%basename:Test=%
-set mainname=csvgrep
-set mainpath=%basedir%\..\%mainname%.pl
-set indir=%basedir%\Input
-set expdir=%basedir%\Expectation
-set workdir=%basedir%\Work
-set tmppath=%workdir%\%basename%.log
-if not exist %workdir% ( mkdir %workdir% )
+call %batdir%\Setting.bat
 
-echo TEST rowfileで行抽出（ASCII文字）
-perl %mainpath% --rowfile 1=%indir%\Grep.txt %indir%\Normal.csv > %workdir%\RowFile_Ascii_Result.csv
-%gnubin%\grep -E "^[be]," %indir%\Normal.csv > %workdir%\RowFile_Ascii_Expectation.csv
-fc %workdir%\RowFile_Ascii_Expectation.csv %workdir%\RowFile_Ascii_Result.csv > nul
+echo TEST fileで行抽出（ASCII文字）
+perl %mainpath% --file %indir%\Grep.txt %indir%\Normal.csv > %workdir%\File_Ascii_Result.csv
+findstr "^[be]," %indir%\Normal.csv > %workdir%\File_Ascii_Expectation.csv
+call :check %workdir%\File_Ascii_Expectation.csv %workdir%\File_Ascii_Result.csv
 if errorlevel 1 ( goto :ERROR )
 
-REM echo TEST rowfileで行抽出（日本語）
-REM perl %mainpath% --rowfile 5=%indir%\Grep日本語.txt %indir%\Normal.csv > %workdir%\RowFile_Ja_Result.csv
-REM perl %mainpath% --rowfile 5=%indir%\GrepJa.txt %indir%\Normal.csv > %workdir%\RowFile_Ja_Result.csv
-REM %gnubin%\grep -E "(あいうえお|さしすせそ)" %indir%\Normal.csv > %workdir%\RowFile_Ja_Expectation.csv
-REM fc %workdir%\RowFile_Ja_Expectation.csv %workdir%\RowFile_Ja_Result.csv > nul
-REM if errorlevel 1 ( goto :ERROR )
-
-echo TEST rowfileで行抽出（対象なし）
-perl %mainpath% --rowfile 1=%indir%\GrepZero.txt %indir%\Normal.csv > %workdir%\RowFile_Zero_Result.csv
-type nul > %workdir%\RowFile_Zero_Expectation.csv
-fc %workdir%\RowFile_Zero_Expectation.csv %workdir%\RowFile_Zero_Result.csv > nul
+echo TEST fileで行抽出（日本語）
+perl %mainpath% --column 5 --file %indir%\Grep日本語.txt %indir%\Normal.csv > %workdir%\File_Ja_Result.csv
+findstr "^[ac]," %indir%\Normal.csv > %workdir%\File_Ja_Expectation.csv
+call :check %workdir%\File_Ja_Expectation.csv %workdir%\File_Ja_Result.csv
 if errorlevel 1 ( goto :ERROR )
 
-echo TEST rowfileで存在しないカラム
-perl %mainpath% --rowfile 999=%indir%\Grep.txt %indir%\Normal.csv > %workdir%\RowFile_NoColumn_Result.csv
+echo TEST fileで行抽出（対象なし）
+perl %mainpath% --file %indir%\GrepZero.txt %indir%\Normal.csv > %workdir%\File_Zero_Result.csv
+type nul > %workdir%\File_Zero_Expectation.csv
+call :check %workdir%\File_Zero_Expectation.csv %workdir%\File_Zero_Result.csv
+if errorlevel 1 ( goto :ERROR )
+
+echo TEST fileで存在しないカラム
+perl %mainpath% --column 6 --file %indir%\Grep.txt %indir%\Normal.csv > %workdir%\File_NoColumn_Result.csv
 if %errorlevel% equ 0 ( goto :ERROR )
 
 rem 後処理
@@ -73,5 +65,13 @@ exit /b 1
 :LOG
 echo %DATE% %TIME% %basename% %1 1>&2
 exit /b 0
+
+:check
+fc %1 %2 > %tmplog%
+set result=%errorlevel%
+if %result% neq 0 (
+  type %tmplog%
+)
+exit /b %result%
 
 :EOF
