@@ -33,22 +33,30 @@ GetOptions(\%opts,
   "column=i",
   "string=s",
   "file=s",
+  # オプション引数（優先度低）
   "delimiter=s",
+  "invert",
   "out=s",
+  "unmatch=s",
+  # 共通引数
   "help|h",
   "debug"
 ) or $opts{help} = 1;
 if ($#ARGV + 1 < 0 || 1 < $#ARGV + 1 || $opts{help}) {
   print "Usage: perl $scriptname [OPTIONS] --column col --string str1,str2,... [inpath]\n";
   print "       perl $scriptname [OPTIONS] --column col --file path [inpath]\n";
-  print "--help, -h          - 当ヘルプを表示する。\n";
-  print "--debug             - デバッグ用\n";
   print "--column col        - カラムcolを対象に条件判定する。colは1始まり。\n";
   print "--string str1,str2,...\n";
   print "                    - 文字列strのいずれかに一致する行を抽出する。\n";
   print "--file path         - ファイルpath内のいずれかの文字列に一致する行を抽出する。\n";
+  # オプション引数（優先度低）
+  print "--debug             - デバッグ用\n";
   print "--delimiter delim   - 入力ファイルの区切り文字。デフォルト：カンマ（,）。\n";
-  print "--out, -o outpath   - 出力ファイルパス。デフォルト：標準出力。\n";
+  print "--help, -h          - 当ヘルプを表示する。\n";
+  print "--invert            - 抽出条件を反転する。\n";
+  print "--out, -o path      - 出力ファイルパス。デフォルト：標準出力。\n";
+  print "--unmatch path      - 条件に一致しない行の出力ファイルパス。デフォルトでは出力なし。\n";
+  # ほぼ必須引数
   print "inpath              - 入力ファイルパス。デフォルト：標準入力。\n";
   exit(1);
 }
@@ -81,10 +89,13 @@ printlog("inpath=$inpath");
 
 # ファイルオープン
 if ($inpath) {
-  open(STDIN, "<", $inpath) or die "ERROR: Can't open $inpath. $!\n";
+  open(STDIN, "<:encoding(cp932)", $inpath) or die "ERROR: Can't open $inpath. $!\n";
 }
 if ($opts{out}) {
-  open(STDOUT, ">", $opts{out}) or die "ERROR: Can't open $opts{out}. $!\n";
+  open(STDOUT, ">:encoding(cp932)", $opts{out}) or die "ERROR: Can't open $opts{out}. $!\n";
+}
+if ($opts{unmatch}) {
+  open(UNMATCHOUT, ">:encoding(cp932)", $opts{unmatch}) or die "ERROR: Can't open $opts{unmatch}. $!\n";
 }
 # 改行コードを制御したいときはバイナリモードにする。
 #binmode(STDOUT);
@@ -116,8 +127,15 @@ while (<STDIN>) {
     $flag = 1;
   }
 
+  # invertオプション処理
+  $flag = not $flag if $opts{invert};
+
   # 行の出力
-  print "$line\n" if ($flag);
+  if ($flag) {
+    print "$line\n" ;
+  } elsif ($opts{unmatch}) {
+    print UNMATCHOUT "$line\n" ;
+  }
 }
 
 # ファイルクローズ
@@ -126,6 +144,9 @@ if ($inpath) {
 }
 if ($opts{out}) {
   close(STDOUT);
+}
+if ($opts{unmatch}) {
+  close(UNMATCHOUT);
 }
 
 # 後処理

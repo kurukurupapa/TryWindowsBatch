@@ -60,6 +60,7 @@ echo TEST 出力パス指定（ファイル書き込みエラー）
 perl %mainpath% -o %workdir% < %indir%\Normal.csv
 if %errorlevel% equ 0 ( goto :ERROR )
 
+
 echo TEST 入力TSVファイル
 perl %mainpath% --delimiter \t --string d %indir%\Normal.tsv > %workdir%\Tsv_Result.csv
 findstr "^d" %indir%\Normal.tsv > %workdir%\Tsv_Expectation.csv
@@ -69,6 +70,22 @@ if errorlevel 1 (
   type %tmplog%
   goto :ERROR
 )
+
+echo TEST invertオプション
+perl %mainpath% --invert --string b %indir%\Normal.csv > %workdir%\Invert_Result.csv
+findstr /v "^b," %indir%\Normal.csv > %workdir%\Invert_Expectation.csv
+fc %workdir%\Invert_Expectation.csv %workdir%\Invert_Result.csv > nul
+if errorlevel 1 ( goto :ERROR )
+
+echo TEST unmatchオプション
+perl %mainpath% --string b %indir%\Normal.csv --unmatch %workdir%\Unmatch_Result2.csv > %workdir%\Unmatch_Result1.csv
+findstr    "^b," %indir%\Normal.csv > %workdir%\Unmatch_Expectation1.csv
+findstr /v "^b," %indir%\Normal.csv > %workdir%\Unmatch_Expectation2.csv
+fc %workdir%\Unmatch_Expectation1.csv %workdir%\Unmatch_Result1.csv > nul
+if errorlevel 1 ( goto :ERROR )
+fc %workdir%\Unmatch_Expectation2.csv %workdir%\Unmatch_Result2.csv > nul
+if errorlevel 1 ( goto :ERROR )
+
 
 rem 後処理
 echo off

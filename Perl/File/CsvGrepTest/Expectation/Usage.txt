@@ -1,11 +1,13 @@
 Usage: perl csvgrep.pl [OPTIONS] --column col --string str1,str2,... [inpath]
        perl csvgrep.pl [OPTIONS] --column col --file path [inpath]
---help, -h          - 当ヘルプを表示する。
---debug             - デバッグ用
 --column col        - カラムcolを対象に条件判定する。colは1始まり。
 --string str1,str2,...
                     - 文字列strのいずれかに一致する行を抽出する。
 --file path         - ファイルpath内のいずれかの文字列に一致する行を抽出する。
+--debug             - デバッグ用
 --delimiter delim   - 入力ファイルの区切り文字。デフォルト：カンマ（,）。
---out, -o outpath   - 出力ファイルパス。デフォルト：標準出力。
+--help, -h          - 当ヘルプを表示する。
+--invert            - 抽出条件を反転する。
+--out, -o path      - 出力ファイルパス。デフォルト：標準出力。
+--unmatch path      - 条件に一致しない行の出力ファイルパス。デフォルトでは出力なし。
 inpath              - 入力ファイルパス。デフォルト：標準入力。
