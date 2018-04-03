@@ -25,12 +25,7 @@ call :LOG 処理開始します。
 
 
 rem 準備
-set mainname=csvjoin
-set mainpath=%basedir%\..\%mainname%.pl
-set indir=%basedir%\Input
-set expdir=%basedir%\Expectation
-set workdir=%basedir%\Work
-if not exist %workdir% ( mkdir %workdir% )
+call %batdir%\Setting.bat
 
 echo TEST ヘルプ
 perl %mainpath% -h > %workdir%\Usage.txt

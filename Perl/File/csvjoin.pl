@@ -38,39 +38,38 @@ GetOptions(\%opts,
 ) or $opts{help} = 1;
 if ($#ARGV + 1 < 2 || 2 < $#ARGV + 1 || $opts{help}) {
   print "Usage: perl $scriptname [OPTIONS] inpath1 inpath2\n";
-  print "--help, -h          - 当ヘルプを表示する。\n";
   print "--debug             - デバッグ用\n";
   print "--file1key col1,col2,... - ファイル1のキーカラム番号。1始まり。\n";
-  print "--file2key col1,col2,... - 上記同様。ファイル1のキーと結合する。\n";
-  print "--out, -o outpath   - 出力ファイルパス。デフォルト：標準出力。\n";
+  print "--file2key col1,col2,... - 上記同様、ファイル2のキーカラム番号。ファイル1のキーと結合する。\n";
+  print "--help, -h          - 当ヘルプを表示する。\n";
+  print "--out, -o path      - 出力ファイルパス。デフォルト：標準出力。\n";
   print "inpath              - 入力ファイルパス。\n";
   exit(1);
 }
-my @inpatharr = @ARGV;
-my @keynumarr = ('1', '1');
-$keynumarr[0] = $opts{file1key} if $opts{file1key};
-$keynumarr[1] = $opts{file2key} if $opts{file2key};
+my @infilearr = ();
+foreach my $e (@ARGV) {
+  my %infile = ();
+  $infile{path} = $e;
+  $infile{keycolumns} = '1';
+  push(@infilearr, \%infile);
+}
+$infilearr[0]->{keycolumns} = $opts{file1key} if $opts{file1key};
+$infilearr[1]->{keycolumns} = $opts{file2key} if $opts{file2key};
 
 # 主処理
 printlog("START");
-printlog("\%opts " . Dumper(\%opts));
-printlog("\@inpatharr " . Dumper(\@inpatharr));
+printlog("opts " . Dumper(\%opts));
+printlog("infilearr " . Dumper(\@infilearr));
 
-# 入力ファイル読み込み
-my %inhash = ();
 my %allkeys = ();
-for (my $i = 0; $i <= $#inpatharr; $i++) {
-  # 実行時引数で指定されたキーカラム番号を取得
-  my $keynum = $keynumarr[$i];
-  my @arr = split(/,/, $keynum);
-
+foreach my $infile (@infilearr) {
   # ファイル読み込み
-  my $inpath = $inpatharr[$i];
-  my %hash = read_file($inpath, @arr);
-  $inhash{$inpath} = \%hash;
+  my ($rowhash, $numcolumns) = read_file($infile->{path}, $infile->{keycolumns});
+  $infile->{rowhash} = $rowhash;
+  $infile->{numcolumns} = $numcolumns;
 
   # キー値の一覧を保持する
-  foreach my $e (keys(%hash)) {
+  foreach my $e (keys(%$rowhash)) {
     $allkeys{$e} = 1;
   }
 }
@@ -82,13 +81,21 @@ if ($opts{out}) {
 
 # キー項目で結合してデータ出力
 foreach my $key (sort(keys(%allkeys))) {
-  my $line = $key;
+  my $line = '';
 
   # 各入力ファイルをキー項目で結合する
-  foreach my $inpath (@inpatharr) {
-    my $row = $inhash{$inpath}->{$key};
-    $line .= ';';
-    $line .= $row if $row;
+  foreach my $infile (@infilearr) {
+    # 入力ファイルの該当行を取得
+    # 該当なしの場合、区切り文字のみの空行を作成
+    my $row = $infile->{rowhash}->{$key};
+    if (not defined($row)) {
+      my $numcolumns = $infile->{numcolumns};
+      $row = "," x ($numcolumns - 1);
+    }
+
+    # 出力行の組み立て
+    $line .= ',' if length($line) > 0;
+    $line .= $row;
   }
 
   # 行の出力
@@ -133,14 +140,18 @@ sub init {
 }
 
 sub read_file {
-  my ($path, @keys) = @_;
+  my ($path, $keycolumns) = @_;
+  my @keycolumnarr = split(/,/, $keycolumns);
   my %hash = ();
+  my $numcolumns = -1;
   open(IN, '<:encoding(cp932)', $path) or die("ERROR: Can't open $path. $!\n");
   while (<IN>) {
     chomp($_);
     my @columns = split(/,/, $_);
+
+    # キー値ごとに行を保持する
     my $keystr = "";
-    foreach my $e (@keys) {
+    foreach my $e (@keycolumnarr) {
       if ($e < 1 || $#columns + 1 < $e) {
         die("ERROR: キーカラム範囲外。path=$path カラム番号=$e\n");
       }
@@ -151,7 +162,12 @@ sub read_file {
       die("ERROR: キー重複発生。path=$inpath キー=$keystr\n")
     }
     $hash{$keystr} = $_;
+
+    # カラム数を保持する
+    if ($numcolumns == -1) {
+      $numcolumns = $#columns + 1;
+    }
   }
   close(IN);
-  return %hash;
+  return (\%hash, $numcolumns);
 }
