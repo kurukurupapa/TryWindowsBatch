@@ -27,39 +27,59 @@ call :LOG 処理開始します。
 rem 準備
 call %batdir%\Setting.bat
 set inpath=%batdir%\Data\Sample.txt
-set num=3
-set /a index=%num%-1
+set pathlist=%inpath%
+set pathlist=%pathlist% %batdir%\Data\OneLine.txt
+set pathlist=%pathlist% %batdir%\Data\Zero.txt
 rem echo on
 
 rem GnuWin32
 echo GnuWin32
-%gnubin%\wc -l %inpath%
+for %%p in (%pathlist%) do (
+  %gnubin%\wc -l %%p
+)
 
 rem Windows標準コマンド for文1
 rem 空行は読み飛ばされる。
 rem 「setlocal enabledelayedexpansion」を指定している場合、「!」や「!」で括られた文字列が消える。
 rem 下記コマンドをコマンドラインから実行する場合、for文の変数の頭「%%」は「%」とする。
 echo Windows for文
-set i=0 & (for /f "delims= eol=" %%a in (%inpath%) do (set /a i=!i!+1)) & echo !i!
+for %%p in (%pathlist%) do (
+  set i=0 & (for /f "delims= eol=" %%a in (%%p) do (set /a i=!i!+1)) & echo !i!
+)
 
 rem Windows標準コマンド for文2
 rem オプションの詳細は、CatTest.bat参照。
 rem 下記コマンドをコマンドラインから実行する場合、for文の変数の頭「%%」は「%」とする。
-set i=0 & (for /f "tokens=1* delims=: eol=" %%a in ('findstr /n "^" %inpath%') do (set /a i=!i!+1)) & echo !i!
+for %%p in (%pathlist%) do (
+  set i=0 & (for /f "tokens=1* delims=: eol=" %%a in ('findstr /n "^" %%p') do (set /a i=!i!+1)) & echo !i!
+)
 
 rem PowerShell
 echo PowerShell
-powershell -Command "$(Get-Content %inpath%).Length"
-powershell -Command "$i=0; cat %inpath% | %%{ $i++ }; $i"
+for %%p in (%pathlist%) do (
+  rem 次の実装だと、1行の場合、文字数を出力してしまう。
+  rem powershell -Command "$(Get-Content %%p).Length"
+  powershell -Command "$(Get-Content %%p | Measure-Object).Count"
+)
+for %%p in (%pathlist%) do (
+  powershell -Command "$i=0; cat %%p | %%{ $i++ }; $i"
+)
 
 rem Perl
 echo Perl
-perl -ne "BEGIN{$count=0}; $count+=1; END{print \"$count\n\"}" %inpath%
-perl -nE "END{print \"$.\n\"}" %inpath%
+for %%p in (%pathlist%) do (
+  perl -ne "BEGIN{$count=0}; $count+=1; END{print \"$count\n\"}" %%p
+)
+for %%p in (%pathlist%) do (
+  perl -nE "END{print \"$.\n\"}" %%p
+)
 
 rem Ruby
+rem TODO 0バイトファイルの場合、出力がなくなってしまう。
 echo Ruby
-ruby -ne "BEGIN{count=0}; count+=1; END{puts count}" %inpath%
+for %%p in (%pathlist%) do (
+  ruby -ne "BEGIN{count=0}; count+=1; END{puts count}" %%p
+)
 
 @echo off
 rem 後処理
