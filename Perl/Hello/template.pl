@@ -60,6 +60,18 @@ foreach my $k (keys(%hash)) {
   print "連想配列操作 $k\n";
 }
 
+# 連想配列の配列
+# ※無名リファレンスを使う方式は省略。
+my %person1 = (name => 'Ken',  country => 'Japan', age => 19);
+my %person2 = (name => 'Taro', country => 'USA',   age => 45);
+my @persons2 = (\%person1, \%person2);
+for my $person (@persons2) {
+  for my $key (sort(keys(%$person))) {
+    my $value = $person->{$key};
+    print "連想配列の配列 $key=$value\n";
+  }
+}
+
 # 制御構文
 my $state = 3;
 if ($state == 1) {
