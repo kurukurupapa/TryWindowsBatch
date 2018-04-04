@@ -1,0 +1,7 @@
+Usage: perl csvdiff.pl [OPTIONS] inpath1 inpath2
+--debug             - デバッグ用
+--delimiter delim   - 入力ファイルの区切り文字。デフォルト：カンマ（,）。
+--help, -h          - 当ヘルプを表示する。
+--key col1,col2,... - キーとなるカラムを指定する。1始まり。
+--out, -o outpath   - 出力ファイルパス。デフォルト：標準出力。
+inpath              - 入力ファイルパス。
