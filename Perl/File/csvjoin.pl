@@ -159,7 +159,7 @@ sub read_file {
       $keystr .= $columns[$e - 1];
     }
     if ($hash{$keystr}) {
-      die("ERROR: キー重複発生。path=$inpath キー=$keystr\n")
+      die("ERROR: キー重複発生。path=$path キー=$keystr\n");
     }
     $hash{$keystr} = $_;
 
