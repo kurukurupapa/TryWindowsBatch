@@ -26,14 +26,20 @@ call :LOG 処理開始します。
 
 rem 準備
 call %batdir%\Setting.bat
-set inpath=.\dummy_1000MB.csv
+set inpath=%performancedir%\dummy_100MB.csv
 set num=100000
-set inpath_small=.\dummy_10MB.csv
+set inpath_small=%performancedir%\dummy_1MB.csv
 set num_small=10000
-set outdir=.
+set outdir=%performancedir%
 rem echo on
 
 rem --- 行数でファイル分割
+rem パフォーマンス測定事例
+rem   データ：100万行、100MB、パソコン：Intel Atom 1.44GHz メモリ2GB ストレージeMMC
+rem     0.2分 GnuWin32
+rem     0.3分 PowerShell
+rem   データ：1万行、1MB、パソコン：Intel Atom 1.44GHz メモリ2GB ストレージeMMC
+rem     0.3分 Windows標準コマンド for文1
 
 rem GnuWin32
 set outprefix=%outdir%\%basename%_line_gnuwin32.txt.
@@ -48,7 +54,7 @@ rem dir %outprefix%*
 
 rem Windows標準コマンド for文1
 set outprefix=%outdir%\%basename%_line_for1_
-del /q %outprefix%*
+if exist %outprefix%* ( del /q %outprefix%* )
 echo %DATE% %TIME% Windows標準コマンドfor文1 START %inpath_small%
 set start=%DATE% %TIME%
 set i=0 & set j=0 & (for /f "delims= eol=" %%a in (%inpath_small%) do (set /a tmp=!i! %% %num_small% & (if !tmp!==0 (set /a j=!j!+1)&(set jstr=00!j!)&(set jstr=!jstr:~-3!)) & (echo %%a)>>%outprefix%!jstr!.txt & set /a i=!i!+1))
@@ -68,6 +74,7 @@ echo %DATE% %TIME% PowerShell END
 powershell -Command "$t=New-TimeSpan '%start%' '%end%'; $t.TotalMinutes.ToString('0.#')+'分'"
 rem Check
 rem dir %outprefix%*
+
 
 rem 後処理
 echo off

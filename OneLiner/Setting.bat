@@ -7,8 +7,14 @@ rem 外部バッチファイルから呼び出され、変数定義するので、「setlocal enabledelayed
 :MAIN
 call :LOG 処理開始します。
 
+set prjdir=%basedir%\..
+set datadir=%basedir%\Data
+set workdir=%basedir%\Work
+set performancedir=%TMP%\TryWindowsBatch\OneLiner
 set gnubin=D:\Apps\gnuwin32\bin
 set winmerge=D:\Apps\WinMerge\WinMergeU.exe /s
+if not exist %workdir% ( mkdir %workdir% )
+if not exist %performancedir% ( mkdir %performancedir% )
 
 :END
 call :LOG 正常終了です。
