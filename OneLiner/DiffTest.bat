@@ -1,6 +1,7 @@
 @echo off
 @setlocal enabledelayedexpansion
 rem diffコマンドライクの各種ワンライナーです。
+rem 一般的なテキストを比較
 
 set basedir=%~dp0
 set basename=%~n0
@@ -28,26 +29,24 @@ rem 準備
 call %batdir%\Setting.bat
 set inpath1=%batdir%\Data\Sample.txt
 set inpath2=%batdir%\Data\Sample2.txt
-set outdir=%CD%
+set outdir=%workdir%
 rem echo on
 
-rem GnuWin32
-set outpath=%outdir%\%basename%_gnuwin32.txt
+echo GnuWin32
+set outpath=%outdir%\%basename%_text_gnuwin32.txt
 %gnubin%\diff %inpath1% %inpath2% > %outpath%
 
-rem Windows標準コマンド fcコマンド
-set outpath=%outdir%\%basename%_fc.txt
+echo Windows標準コマンド fcコマンド
+set outpath=%outdir%\%basename%_text_fc.txt
 fc %inpath1% %inpath2% > %outpath%
 rem Check
-fc %outdir%\%basename%_gnuwin32.txt %outpath% > nul
-if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.txt %outpath%)
+call :CHECK %outdir%\%basename%_text_gnuwin32.txt %outpath%
 
-rem PowerShell
-set outpath=%outdir%\%basename%_ps.txt
-powershell -Command "Compare-Object (cat %inpath1%) (cat %inpath2%) | Out-File -Encoding Default %outpath%"
+echo PowerShell
+set outpath=%outdir%\%basename%_text_ps.txt
+powershell -Command "Compare-Object (cat %inpath1%) (cat %inpath2%) | %%{ $_.SideIndicator+' '+$_.InputObject }" > %outpath%
 rem Check
-fc %outdir%\%basename%_gnuwin32.txt %outpath% > nul
-if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_gnuwin32.txt %outpath%)
+call :CHECK %outdir%\%basename%_text_gnuwin32.txt %outpath%
 
 rem 後処理
 echo off
@@ -64,6 +63,11 @@ exit /b 1
 
 :LOG
 echo %DATE% %TIME% %basename% %1 1>&2
+exit /b 0
+
+:CHECK
+fc %1 %2 > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %1 %2)
 exit /b 0
 
 :EOF
