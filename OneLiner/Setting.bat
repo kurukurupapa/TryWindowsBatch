@@ -9,6 +9,7 @@ call :LOG ˆ—ŠJn‚µ‚Ü‚·B
 
 set prjdir=%basedir%\..
 set datadir=%basedir%\Data
+set expdir=%basedir%\Expectation
 set workdir=%basedir%\Work
 set performancedir=%TMP%\TryWindowsBatch\OneLiner
 set gnubin=D:\Apps\gnuwin32\bin

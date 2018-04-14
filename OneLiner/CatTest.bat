@@ -27,24 +27,26 @@ call :LOG 処理開始します。
 rem 準備
 call %batdir%\Setting.bat
 set inpath=%batdir%\Data\Sample.txt
-set outdir=%CD%
+set outdir=%batdir%\Work
 rem echo on
 
-rem GnuWin32
+
+echo GnuWin32
 set outpath=%outdir%\%basename%_gnuwin32.txt
 %gnubin%\cat %inpath% > %outpath%
 rem Check
 fc %inpath% %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)
 
-rem Windows標準コマンド typeコマンド
+
+echo Windows標準コマンド typeコマンド
 set outpath=%outdir%\%basename%_type.txt
 type %inpath% > %outpath%
 rem Check
 fc %inpath% %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)
 
-rem Windows標準コマンド for文1 簡易版
+echo Windows標準コマンド for文1 簡易版
 rem 各行は、空白またはタブで分割され、1つ目のトークンのみ出力される。
 rem 「;」始まりの行はコメント行とみなされ読み飛ばされる。
 rem 空行は読み飛ばされる。
@@ -56,7 +58,7 @@ rem Check
 fc %inpath% %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)
 
-rem Windows標準コマンド for文2 改善版
+echo Windows標準コマンド for文2 改善版
 rem トークン分割、コメント行判定を行わない。
 rem 空行は読み飛ばされる。
 rem 「setlocal enabledelayedexpansion」を指定している場合、「!」や「!」で括られた文字列が消える。
@@ -67,7 +69,7 @@ rem Check
 fc %inpath% %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)
 
-rem Windows標準コマンド for文3 改善版
+echo Windows標準コマンド for文3 改善版
 rem /fオプションでテキストファイルの中身を処理できる。
 rem 各行は区切り文字で分割されトークンと呼ばれる。区切り文字はdelimsで指定可能。デフォルトはスペースとタブ。
 rem 処理対象とするトークンはtokensで指定可能。複数指定した場合、代入する変数（下記%a）を基準にアルファベット順に新たな変数（%b,%c,...）が定義されて各トークンが設定される。
@@ -82,7 +84,7 @@ rem Check
 fc %inpath% %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)
 
-rem Windows標準コマンド for文4 改善版
+echo Windows標準コマンド for文4 改善版
 rem 上記for文3に比べて、行頭「:」を残すことができる。
 rem 参照
 rem バッチファイル | テキストファイルを 1 行ずつ読み込む (完全版？) ( その他コンピュータ ) - Kerupani129 Project のブログ - Yahoo!ブログ
@@ -93,7 +95,8 @@ rem Check
 fc %inpath% %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)
 
-rem PowerShell
+
+echo PowerShell
 rem エイリアス cat -> Get-Content
 set outpath=%outdir%\%basename%_ps.txt
 powershell -Command "cat %inpath%" > %outpath%
@@ -101,7 +104,18 @@ rem Check
 fc %inpath% %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %inpath% %outpath%)
 
-rem Ruby
+
+:PERL
+echo Perl
+set outpath=%outdir%\%basename%_perl
+perl -ne "print $_" %inpath% > %outpath%1.txt
+perl -pe "" %inpath% > %outpath%2.txt
+rem Check
+call :CHECK %inpath% %outpath%1.txt
+call :CHECK %inpath% %outpath%2.txt
+
+
+echo Ruby
 rem デフォルトの外部/内部エンコーディングはWindows-31Jの模様。そのため入力出力ファイルをWindows-31Jと見なす。
 rem 必要ならrubyコマンドの-Eオプションでエンコーディングを指定する。
 set outpath=%outdir%\%basename%_ruby.txt
@@ -126,6 +140,11 @@ exit /b 1
 
 :LOG
 echo %DATE% %TIME% %basename% %1 1>&2
+exit /b 0
+
+:CHECK
+fc %1 %2 > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %1 %2)
 exit /b 0
 
 :EOF

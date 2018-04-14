@@ -4,6 +4,7 @@
 # 無視するフォルダ名
 tmp/
 work/
+Work/
 
 # 無視するフォルダ/ファイル
 /Expect/SedTest_UTF-8_LF.txt.sjis

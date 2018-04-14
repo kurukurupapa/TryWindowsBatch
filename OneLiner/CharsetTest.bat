@@ -35,10 +35,11 @@ set utf8crlfpath=%batdir%\Data\Sample_UTF8_CRLF.txt
 set utf8bomlfpath=%batdir%\Data\Sample_UTF8-BOM_LF.txt
 set utf8bomcrlfpath=%batdir%\Data\Sample_UTF8-BOM_CRLF.txt
 set crlfpath=%batdir%\Data\Sample.txt
-set outdir=%CD%
+set outdir=%batdir%\Work
 rem echo on
 
-rem GnuWin32
+
+echo GnuWin32
 rem GnuWin32のsedはSJISを前提にしている模様。UTF8を渡すと処理が止まり応答がなくなった。
 set outprefix=%outdir%\%basename%_gnuwin32_
 rem 文字コード変換 SJIS → UTF-8
@@ -72,7 +73,8 @@ if %errorlevel% neq 0 (echo NG & start %winmerge% %sjislfpath% %outprefix%sed_SJ
 fc /b %sjiscrlfpath% %outprefix%sed_SJIS_CRLF.txt > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %sjiscrlfpath% %outprefix%sed_SJIS_CRLF.txt)
 
-rem Windows標準コマンド
+
+echo Windows標準コマンド
 set outprefix=%outdir%\%basename%_win_
 rem 文字コード変換 UTF-8 → SJIS
 rem TODO 上手くいかない。 start /min /wait cmd /c chcp 932 ^& cmd /c type %utf8lfpath% ^> %outprefix%chcp_SJIS_LF.txt
@@ -86,7 +88,8 @@ rem if %errorlevel% neq 0 (echo NG & start %winmerge% %sjislfpath% %outprefix%ch
 rem fc /b %sjiscrlfpath% %outprefix%chcp_SJIS_CRLF.txt > nul
 rem if %errorlevel% neq 0 (echo NG & start %winmerge% %sjiscrlfpath% %outprefix%chcp_SJIS_CRLF.txt)
 
-rem PowerShell
+
+echo PowerShell
 rem Out-Fileだと-Encodingに「Byte」が使えない。「Byte」を使いたいときはSet-Contentを使う。Set-Contentだとリードロックがかかる。
 rem PowerShellのUTF-8は、BOM付きUTF-8。
 rem .NET Frameworkの[Text.Encoding]::UTF8は、BOM付きUTF-8。
@@ -183,26 +186,34 @@ if %errorlevel% neq 0 (echo NG & start %winmerge% %utf8bomcrlfpath% %outprefix%c
 fc /b %utf8bomcrlfpath% %outprefix%cat_Set-Content_UTF8-BOM_CRLF.txt > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %utf8bomcrlfpath% %outprefix%cat_Set-Content_UTF8-BOM_CRLF.txt)
 
-rem Perl
+
+echo Perl
 rem ActivePerlだと（？）、ファイル読み込み時にCRLF→LFに変換される模様。
 set outprefix=%outdir%\%basename%_perl_
+rem 文字コード変換 SJIS → UTF-8
+perl -MEncode -pe "encode('utf8',decode('sjis',$_))" %sjislfpath% > %outprefix%UTF8_LF.txt
+perl -MEncode -pe "encode('utf8',decode('sjis',$_))" %sjiscrlfpath% > %outprefix%UTF8_CRLF.txt
+rem 文字コード変換 UTF-8 → SJIS
+perl -MEncode -pe "encode('sjis',decode('utf8',$_))" %utf8lfpath% > %outprefix%SJIS_LF.txt
+perl -MEncode -pe "encode('sjis',decode('utf8',$_))" %utf8crlfpath% > %outprefix%SJIS_CRLF.txt
 rem 改行コード変換 CRLF → LF
 perl -pne "BEGIN{binmode(STDOUT)}" %sjiscrlfpath% > %outprefix%SJIS_LF.txt
 perl -pne "BEGIN{binmode(STDOUT)}" %utf8crlfpath% > %outprefix%UTF8_LF.txt
 rem 改行コード変換 LF → CRLF
-perl -pne "" %sjislfpath% > %outprefix%SJIS_CRLF.txt
-perl -pne "" %utf8lfpath% > %outprefix%UTF8_CRLF.txt
+perl -pe "" %sjislfpath% > %outprefix%SJIS_CRLF.txt
+perl -pe "" %utf8lfpath% > %outprefix%UTF8_CRLF.txt
 rem Check
-fc /b %sjislfpath% %outprefix%SJIS_LF.txt > nul
-if %errorlevel% neq 0 (echo NG & start %winmerge% %sjislfpath% %outprefix%SJIS_LF.txt)
-fc /b %utf8lfpath% %outprefix%UTF8_LF.txt > nul
-if %errorlevel% neq 0 (echo NG & start %winmerge% %utf8lfpath% %outprefix%UTF8_LF.txt)
-fc /b %sjiscrlfpath% %outprefix%SJIS_CRLF.txt > nul
-if %errorlevel% neq 0 (echo NG & start %winmerge% %sjiscrlfpath% %outprefix%SJIS_CRLF.txt)
-fc /b %utf8crlfpath% %outprefix%UTF8_CRLF.txt > nul
-if %errorlevel% neq 0 (echo NG & start %winmerge% %utf8crlfpath% %outprefix%UTF8_CRLF.txt)
+call :CHECK %utf8lfpath% %outprefix%UTF8_LF.txt
+call :CHECK %utf8crlfpath% %outprefix%UTF8_CRLF.txt
+call :CHECK %sjislfpath% %outprefix%SJIS_LF.txt
+call :CHECK %sjiscrlfpath% %outprefix%SJIS_CRLF.txt
+call :CHECK %sjislfpath% %outprefix%SJIS_LF.txt
+call :CHECK %utf8lfpath% %outprefix%UTF8_LF.txt
+call :CHECK %sjiscrlfpath% %outprefix%SJIS_CRLF.txt
+call :CHECK %utf8crlfpath% %outprefix%UTF8_CRLF.txt
 
-rem Ruby
+
+echo Ruby
 rem デフォルトの外部/内部エンコーディングはWindows-31Jの模様。そのため入力出力ファイルをWindows-31Jと見なす。
 rem 必要ならrubyコマンドの-Eオプションでエンコーディングを指定する。
 rem ファイル読み込み時にCRLF→LFに変換される模様。
@@ -229,6 +240,7 @@ if %errorlevel% neq 0 (echo NG & start %winmerge% %sjiscrlfpath% %outprefix%SJIS
 fc /b %utf8crlfpath% %outprefix%UTF8_CRLF.txt > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %utf8crlfpath% %outprefix%UTF8_CRLF.txt)
 
+
 rem 後処理
 echo off
 
@@ -244,6 +256,11 @@ exit /b 1
 
 :LOG
 echo %DATE% %TIME% %basename% %1 1>&2
+exit /b 0
+
+:CHECK
+fc /b %1 %2 > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %1 %2)
 exit /b 0
 
 :EOF

@@ -1,0 +1,4 @@
+サンプルファイル
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+サンプルデータです。

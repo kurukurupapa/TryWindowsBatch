@@ -33,7 +33,9 @@ set pattern2=サンプル
 set pattern_space=a pen
 set pattern_re=^^a.*z$
 set pattern_re2=サ.*ル
-set outdir=%CD%
+set outdir=%batdir%\Work
+set exppath_match=%expdir%\GrepText_Sample_Match.txt
+set exppath_mismatch=%expdir%\GrepText_Sample_Mismatch.txt
 rem echo on
 
 rem GnuWin32
@@ -84,7 +86,18 @@ rem Check
 fc %outdir%\%basename%_ok2.txt %outpath% > nul
 if %errorlevel% neq 0 (echo NG & start %winmerge% %outdir%\%basename%_ok2.txt %outpath%)
 
-rem Ruby
+
+:PERL
+echo Perl
+set outpath=%outdir%\%basename%_perl
+perl -ne "print $_ if $_ =~ /(%pattern_re%|%pattern_re2%)/i" %inpath% > %outpath%_match.txt
+perl -ne "print $_ if $_ ^!~ /(%pattern_re%|%pattern_re2%)/i" %inpath% > %outpath%_mismatch.txt
+rem Check
+call :CHECK %exppath_match% %outpath%_match.txt
+call :CHECK %exppath_mismatch% %outpath%_mismatch.txt
+
+
+echo Ruby
 rem デフォルトの外部/内部エンコーディングはWindows-31Jの模様。そのため入力出力ファイルをWindows-31Jと見なす。
 rem 必要ならrubyコマンドの-Eオプションでエンコーディングを指定する。
 rem ワンライナーで書いたRubyスクリプトは、WindowsからRubyへUTF-8で渡し、RubyはWindows-31Jで解釈しようとし、不整合な状態となる模様。
@@ -116,6 +129,11 @@ exit /b 1
 
 :LOG
 echo %DATE% %TIME% %basename% %1 1>&2
+exit /b 0
+
+:CHECK
+fc %1 %2 > nul
+if %errorlevel% neq 0 (echo NG & start %winmerge% %1 %2)
 exit /b 0
 
 :EOF
