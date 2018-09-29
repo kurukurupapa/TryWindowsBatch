@@ -12,36 +12,57 @@ set timestr=%timestrtmp:~0,2%%timestrtmp:~3,2%%timestrtmp:~6,2%
 set timestamp=%datestr%-%timestr%
 
 :INIT
+set debug=0
 if "%~1"==""   set help=1
 if "%~1"=="/?" set help=1
-if "%help%"=="1" (
-  echo 使い方：%batname% [/?] type
-  echo type - bat, vbs
-  exit /b 0
-)
 set type=%1
+set inpath=%batdir%\%basename%.ini
+set outdir=%CD%
 
 :MAIN
 call :LOG 処理開始します。
-
-
-
-if "%type%"=="bat" (
-  set inlist=%batdir%\..\Bat\Template.bat
-  set inlist=!inlist! %batdir%\..\Bat\TemplateBatWrapper.bat
-) else if "%type%"=="vbs" (
-  set inlist=%batdir%\..\VBScript\Hello\Template.vbs
-  set inlist=!inlist! %batdir%\..\VBScript\Hello\TemplateVbsWrapper.bat
+if "%help%"=="1" (
+  call :HELP
+) else (
+  call :PROC
 )
+goto :END
 
-for %%f in (!inlist!) do (
-  if not exist %%f (
-    call :LOG %%f が見つかりません。
-    goto ERROR
+
+:HELP
+echo 使い方：%batname% [/?] type
+echo type:
+for /f "tokens=1,2 delims== eol=;" %%a in (%inpath%) do (
+  set tmp=%%a
+  if "!tmp:~0,1!!tmp:~-1,1!"=="[]" (
+    rem セクションの場合
+    set sec=!tmp:~1,-1!
+    echo !sec!
   )
-  copy %%f .
 )
+exit /b 0
 
+
+:PROC
+set sec=
+for /f "tokens=1,2 delims== eol=;" %%a in (%inpath%) do (
+  set tmp=%%a
+  if "!tmp:~0,1!!tmp:~-1,1!"=="[]" (
+    rem セクションの場合
+    set sec=!tmp:~1,-1!
+  ) else (
+    rem キーバリューの場合
+    set key=%%a
+    set val=%%b
+
+    rem 対象であれば実行する
+    if "!sec!"=="%type%" (
+      echo !val!
+      !val!
+    )
+  )
+)
+exit /b 0
 
 
 :END
@@ -53,7 +74,9 @@ call :LOG 異常終了です。
 exit /b 1
 
 :LOG
-echo %DATE% %TIME% %basename% %1 1>&2
+if "%debug%"=="1" (
+  echo %DATE% %TIME% %basename% %1 1>&2
+)
 exit /b 0
 
 :EOF
