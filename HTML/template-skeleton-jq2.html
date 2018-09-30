@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Template</title>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css'>
+    <link rel='stylesheet' href='./template-skeleton.css'>
+    <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+    <script src='./template.js'></script>
+  </head>
+  <body>
+    <div class='container'>
+      <!-- ヘッダー -->
+      <header>
+        <p>Brand</p>
+      </header>
+
+      <!-- コンテンツ -->
+      <div class='main'>
+        <h2>Template</h2>
+        <p>こんにちは。HTML、CSS、JavaScriptのテンプレートです。</p>
+        <ul>
+          <li>CSS Framework: <a href='http://getskeleton.com/'>Skeleton</a></li>
+          <li>JavaScript Library: <a href='https://jquery.com/'>jQuery</a> ver.2</li>
+        </ul>
+      </div>
+
+      <!-- フッター -->
+      <footer>
+        <p>&copy; 2018 sample-company</p>
+      </footer>
+    </div>
+
+    <script type='text/javascript'>
+      $(window).ready(template.onReady);
+    </script>
+  </body>
+</html>
